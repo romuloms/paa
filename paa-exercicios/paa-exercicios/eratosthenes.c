@@ -21,7 +21,7 @@ void inicializar(LISTA *l)
 
 bool inserir(ITEM item, LISTA *l)
 {
-    if(l->tamanho == MAX)
+    if (l->tamanho == MAX)
         return false;
     else
         l->itens[l->tamanho++] = item;
@@ -38,7 +38,7 @@ void exibirLista(LISTA *l)
 {
     printf("[");
     
-    for(int i = 0; i < l->tamanho;)
+    for (int i = 0; i < l->tamanho;)
     {
         exibirItem(l->itens[i++]);
         if(i < l->tamanho)
@@ -69,16 +69,16 @@ LISTA sivoDeEratostenes(ITEM n)
     double raiz = sqrt(n);
     int raizInt = floor(raiz);
     
-    for(int p = 0; p <= n; p++)
+    for (int p = 0; p <= n; p++)
         inserir(p, &l);
     
-    for(int q = 2; q <= raizInt; q++)
+    for (int q = 2; q <= raizInt; q++)
     {
         if(l.itens[q] != 0)
         {
             int j = q * q;
             
-            while(j <= n)
+            while (j <= n)
             {
                 l.itens[j] = 0;
                 j = j + q;
@@ -88,9 +88,9 @@ LISTA sivoDeEratostenes(ITEM n)
     
     int i = 0;
     
-    for(int r = 2; r <= n; r++)
+    for (int r = 2; r <= n; r++)
     {
-        if(l.itens[r] != 0)
+        if (l.itens[r] != 0)
         {
             resultL.itens[i] = l.itens[r];
             resultL.tamanho++;

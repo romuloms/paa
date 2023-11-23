@@ -6,6 +6,11 @@
 //
 
 #include <stdio.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include <math.h>
 
 #include "eratosthenes.h"
 
@@ -17,7 +22,7 @@ void imprimirStatus(LISTA *l)
     printf("\n");
 }
 
-void testSieve(void)
+void testeSieve(void)
 {
     printf("=> Teste do Sivo de Eratostenes\n");
     int n;
@@ -29,9 +34,59 @@ void testSieve(void)
     imprimirStatus(&lista);
 }
 
+char* calcularDigito(char *chave)
+{
+    int cont = 0, valAux = 0;
+    bool resultado = false;
+    
+    if (strcmp(chave, "FIM") == 0)
+        return "";
+
+    for (int i = 0; chave[i] != '\0' ; i++)
+    {
+        if (chave[i] == '-')
+        {
+            cont += valAux;
+            int ultimo = chave[++i] - '0';
+            resultado = (cont % 10) == ultimo;
+            break;
+        }
+        if (chave[i] != '.') {
+            int valInt = chave[i] - '0';
+            if (valAux < valInt)
+                valAux = valInt;
+        }
+        if (chave[i] == '.')
+        {
+            cont += valAux;
+            valAux = 0;
+        }
+    }
+    return resultado ? "VALIDO\n" : "INVALIDO\n";
+}
+
+void testeCalcularDigito(void)
+{
+    printf("=> Teste de Calcurar o digito do cpf\n");
+    
+    char chave[20];
+    char* res = (char*)malloc(20 * sizeof(char));
+    
+    while (1)
+    {
+        if (strcmp(chave, "FIM") == 0)
+            break;
+        printf("digite uma entrada ou FIM para parar: \n");
+        scanf("%s", chave);
+        res = calcularDigito(chave);
+        printf("%s", res);
+    }
+}
+
 int main(void) {
 //    LISTA l;
-    testSieve();
+//    testeSieve();
+    testeCalcularDigito();
     
     return 0;
 }
