@@ -12,8 +12,8 @@
 #include <stdbool.h>
 #include <math.h>
 
-#ifndef eratosthenes_h
-#define eratosthenes_h
+#ifndef Structures_h
+#define Structures_h
 
 #define MAX 1000
 

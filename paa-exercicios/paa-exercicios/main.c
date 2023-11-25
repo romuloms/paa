@@ -12,7 +12,7 @@
 #include <stdbool.h>
 #include <math.h>
 
-#include "eratosthenes.h"
+#include "Structures.h"
 
 
 void imprimirStatus(LISTA *l)
@@ -20,6 +20,47 @@ void imprimirStatus(LISTA *l)
     printf("Tamanho da lista = %d\n", l->tamanho);
     exibirLista(l);
     printf("\n");
+}
+
+LISTA sivoDeEratostenes(ITEM n)
+{
+    LISTA l, resultL;
+    inicializar(&l);
+    inicializar(&resultL);
+    
+    double raiz = sqrt(n);
+    int raizInt = floor(raiz);
+    
+    for (int p = 0; p <= n; p++)
+        inserir(p, &l);
+    
+    for (int q = 2; q <= raizInt; q++)
+    {
+        if(l.itens[q] != 0)
+        {
+            int j = q * q;
+            
+            while (j <= n)
+            {
+                l.itens[j] = 0;
+                j = j + q;
+            }
+        }
+    }
+    
+    int i = 0;
+    
+    for (int r = 2; r <= n; r++)
+    {
+        if (l.itens[r] != 0)
+        {
+            resultL.itens[i] = l.itens[r];
+            resultL.tamanho++;
+            i = i + 1;
+        }
+    }
+    
+    return resultL;
 }
 
 void testeSieve(void)
@@ -51,7 +92,8 @@ char* calcularDigito(char *chave)
             resultado = (cont % 10) == ultimo;
             break;
         }
-        if (chave[i] != '.') {
+        if (chave[i] != '.') 
+        {
             int valInt = chave[i] - '0';
             if (valAux < valInt)
                 valAux = valInt;
@@ -84,9 +126,9 @@ void testeCalcularDigito(void)
 }
 
 int main(void) {
-//    LISTA l;
-//    testeSieve();
-    testeCalcularDigito();
+    LISTA l;
+    testeSieve();
+//    testeCalcularDigito();
     
     return 0;
 }

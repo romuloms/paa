@@ -5,7 +5,7 @@
 //  Created by Rômulo Santana on 21/11/23.
 //
 
-#include "eratosthenes.h"
+#include "Structures.h"
 #include <stdio.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -60,43 +60,4 @@ bool inserirNaPos(ITEM item, int posicao, LISTA *l)
     return true;
 }
 
-LISTA sivoDeEratostenes(ITEM n)
-{
-    LISTA l, resultL;
-    inicializar(&l);
-    inicializar(&resultL);
-    
-    double raiz = sqrt(n);
-    int raizInt = floor(raiz);
-    
-    for (int p = 0; p <= n; p++)
-        inserir(p, &l);
-    
-    for (int q = 2; q <= raizInt; q++)
-    {
-        if(l.itens[q] != 0)
-        {
-            int j = q * q;
-            
-            while (j <= n)
-            {
-                l.itens[j] = 0;
-                j = j + q;
-            }
-        }
-    }
-    
-    int i = 0;
-    
-    for (int r = 2; r <= n; r++)
-    {
-        if (l.itens[r] != 0)
-        {
-            resultL.itens[i] = l.itens[r];
-            resultL.tamanho++;
-            i = i + 1;
-        }
-    }
-    
-    return resultL;
-}
+
