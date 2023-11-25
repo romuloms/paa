@@ -1,2 +1,3 @@
 *.xcodeproj/
 paa-exercicios/*.xcodeproj/
+.DS_Store
