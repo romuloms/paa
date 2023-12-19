@@ -125,10 +125,117 @@ void testeCalcularDigito(void)
     }
 }
 
+bool elementosUnicos(int* vetor, int tamanho)
+{
+    for (int i = 0; i <= tamanho - 2; i++)
+    {
+        for (int j = i + 1; j <= tamanho - 1; j++)
+        {
+            if (vetor[i] == vetor[j])
+                return false;
+        }
+    }
+    return true;
+}
+
+int valorMaximo(int* vetor, int tamanho)
+{
+    int maximo = vetor[0];
+    
+    for (int i = 1; i <= tamanho - 1; i++)
+        if (vetor[i] > maximo)
+            maximo = vetor[i];
+    
+    return maximo;
+}
+
+int** criaMatriz(void)
+{
+    int** matriz;
+    int linhas, colunas, i, j;
+    
+    printf("Numero de linhas: ");
+    scanf("%d", &linhas);
+    printf("Numero de colunas: ");
+    scanf("%d", &colunas);
+    
+    matriz = (int**) malloc(linhas * sizeof(int*));
+    
+    if (matriz == NULL)
+    {
+        printf("Falha de alocacao de memoria p/ linhas.");
+        return 0;
+    }
+    
+    for (i = 0; i < linhas; i++)
+    {
+        matriz[i] = (int*) malloc(colunas * sizeof(int));
+        if (matriz[i] == NULL)
+        {
+            printf("Falha de alocao de memoria p/ colunas.");
+            return 0;
+        }
+    }
+    
+    printf("Elementos da matriz:\n");
+    for (i = 0; i < linhas; i++)
+    {
+        for (j = 0; j < colunas; j++)
+        {
+            printf("Elemento [%d][%d]: ", i, j);
+            scanf("%d", &matriz[i][j]);
+        }
+    }
+    
+    return matriz;
+}
+
+int** multiplicacaoMatrizes(int** matA, int** matB, int dimensao)
+{
+    int** matC = (int**) malloc(dimensao * sizeof(int*));
+    for (int z = 0; z < dimensao; z++)
+        matC[z] = (int*) malloc(dimensao * sizeof(int));
+    
+    for (int i = 0; i <= dimensao - 1; i++)
+    {
+        for (int j = 0; j <= dimensao - 1; j++)
+        {
+            matC[i][j] = 0;
+            for (int k = 0; k <= dimensao - 1; k++)
+                matC[i][j] = matC[i][j] + (matA[i][k] * matB[k][j]);
+        }
+    }
+    
+    return matC;
+}
+
+void printMatrizQuadrada(int** matriz, int dimensao)
+{
+    for (int i = 0; i < dimensao; i++)
+    {
+        for (int j = 0; j < dimensao; j++)
+            printf("%d ", matriz[i][j]);
+        printf("\n");
+    }
+}
+
 int main(void) {
-    LISTA l;
-    testeSieve();
+//    LISTA l;
+//    testeSieve();
 //    testeCalcularDigito();
+//    int vetorUnicos[] = {11, 23, 39, 41, 15, 4};;
+//    bool unico = elementosUnicos(vetorUnicos, 6);
+//    printf("%s\n", unico ? "verdade" : "falso");
+//    int max = valorMaximo(vetorUnicos, 6);
+//    printf("%d\n", max);
+    int** matrizA = criaMatriz();
+    int** matrizB = criaMatriz();
+    int** mult = multiplicacaoMatrizes(matrizA, matrizB, 3);
+    
+    printMatrizQuadrada(mult, 3);
+    free(matrizA);
+    free(matrizB);
+    free(mult);
     
     return 0;
 }
