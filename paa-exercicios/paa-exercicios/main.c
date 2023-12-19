@@ -149,47 +149,6 @@ int valorMaximo(int* vetor, int tamanho)
     return maximo;
 }
 
-int** criaMatriz(void)
-{
-    int** matriz;
-    int linhas, colunas, i, j;
-    
-    printf("Numero de linhas: ");
-    scanf("%d", &linhas);
-    printf("Numero de colunas: ");
-    scanf("%d", &colunas);
-    
-    matriz = (int**) malloc(linhas * sizeof(int*));
-    
-    if (matriz == NULL)
-    {
-        printf("Falha de alocacao de memoria p/ linhas.");
-        return 0;
-    }
-    
-    for (i = 0; i < linhas; i++)
-    {
-        matriz[i] = (int*) malloc(colunas * sizeof(int));
-        if (matriz[i] == NULL)
-        {
-            printf("Falha de alocao de memoria p/ colunas.");
-            return 0;
-        }
-    }
-    
-    printf("Elementos da matriz:\n");
-    for (i = 0; i < linhas; i++)
-    {
-        for (j = 0; j < colunas; j++)
-        {
-            printf("Elemento [%d][%d]: ", i, j);
-            scanf("%d", &matriz[i][j]);
-        }
-    }
-    
-    return matriz;
-}
-
 int** multiplicacaoMatrizes(int** matA, int** matB, int dimensao)
 {
     int** matC = (int**) malloc(dimensao * sizeof(int*));
@@ -219,23 +178,85 @@ void printMatrizQuadrada(int** matriz, int dimensao)
     }
 }
 
+int** criaMatrizQuadrada(int ordem)
+{
+    int** matriz;
+    int i, j;
+    int linhas = ordem;
+    int colunas = ordem;
+    
+    matriz = (int**) malloc(linhas * sizeof(int*));
+    
+    if (matriz == NULL)
+    {
+        printf("Falha de alocacao de memoria p/ linhas.");
+        return 0;
+    }
+    
+    for (i = 0; i < linhas; i++)
+    {
+        matriz[i] = (int*) malloc(colunas * sizeof(int));
+        if (matriz[i] == NULL)
+        {
+            printf("Falha de alocao de memoria p/ colunas.");
+            return 0;
+        }
+    }
+    
+    printf("Elementos da matriz:\n");
+    for (i = 0; i < linhas; i++)
+    {
+        for (j = 0; j < colunas; j++)
+        {
+            scanf("%d", &matriz[i][j]);
+        }
+    }
+    
+    return matriz;
+}
+
+int celebridade(int** matriz, int dimensao)
+{
+    int celeb = -1;
+    
+    for (int i = 0; i < dimensao; i++)
+    {
+        int conheceAlguem = 0;
+        int todosConhecem = 1;
+        
+        for (int j = 0; j < dimensao; j++)
+        {
+            if (i != j)
+            {
+                if (matriz[i][j] == 1)
+                    conheceAlguem = 1;
+                else if (matriz[j][i] == 0)
+                    todosConhecem = 0;
+            }
+        }
+        
+        if (!conheceAlguem && todosConhecem)
+        {
+            celeb = i;
+            break;
+        }
+    }
+    return celeb;
+}
+
 int main(void) {
 //    LISTA l;
-//    testeSieve();
-//    testeCalcularDigito();
-//    int vetorUnicos[] = {11, 23, 39, 41, 15, 4};;
-//    bool unico = elementosUnicos(vetorUnicos, 6);
-//    printf("%s\n", unico ? "verdade" : "falso");
-//    int max = valorMaximo(vetorUnicos, 6);
-//    printf("%d\n", max);
-    int** matrizA = criaMatriz();
-    int** matrizB = criaMatriz();
-    int** mult = multiplicacaoMatrizes(matrizA, matrizB, 3);
+//    int vetorUnicos[] = {11, 23, 39, 41, 15, 4};
+    int** celebs = criaMatrizQuadrada(5);
+    int res = celebridade(celebs, 5);
+    if (res == -1)
+        printf("NAO HA CELEBRIDADE");
+    else
+        printf("%d\n", res);
     
-    printMatrizQuadrada(mult, 3);
-    free(matrizA);
-    free(matrizB);
-    free(mult);
-    
+    for (int i = 0; i < 5; i++)
+        free(celebs[i]);
+    free(celebs);
+
     return 0;
 }
