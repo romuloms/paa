@@ -215,6 +215,26 @@ int** criaMatrizQuadrada(int ordem)
     return matriz;
 }
 
+int** matriz1e0(int n) 
+{
+    int** mat = (int**) malloc (n * sizeof(int*));
+    
+    for (int i = 0; i < n; i++)
+        mat[i] = (int*) malloc (n * sizeof(int));
+
+    for (int i = 0; i < n; i++)
+      for (int j = 0; j < n; j++)
+          mat[i][j] = rand()%2;
+    return mat;
+}
+
+void liberaMatriz(int n, int** m) 
+{
+  for (int i = 0; i < n; i++)
+    free(m[i]);
+  free(m);
+}
+
 int celebridade(int** matriz, int dimensao)
 {
     int celeb = -1;
@@ -244,19 +264,49 @@ int celebridade(int** matriz, int dimensao)
     return celeb;
 }
 
+int celebridadeLinear(int n, int** conhece)
+{
+    int candidato = 0;
+  
+    for (int i = 1; i < n; i++)
+    {
+         if (conhece[candidato][i] == 1)
+              candidato = i;
+    }
+  
+    for (int j = 0; j < n; j++)
+    {
+         if (j != candidato && (conhece[candidato][j] != 0 || conhece[j][candidato] == 0))
+              return -1;
+    }
+
+      return candidato;
+}
+
+void imprimeMatriz(int dimensao, int**matriz)
+{
+    for (int i = 0; i < dimensao; i++)
+    {
+        for (int j = 0; j < dimensao; j++)
+            printf("%d ", matriz[i][j]);
+        printf("\n");
+    }
+}
+
 int main(void) {
 //    LISTA l;
 //    int vetorUnicos[] = {11, 23, 39, 41, 15, 4};
-    int** celebs = criaMatrizQuadrada(5);
-    int res = celebridade(celebs, 5);
+//    int** celebs = criaMatrizQuadrada(5);
+//    liberaMatriz(5, celebs);
+    int** mat = matriz1e0(5);
+    imprimeMatriz(5, mat);
+    int res = celebridadeLinear(5, mat);
     if (res == -1)
-        printf("NAO HA CELEBRIDADE");
+        printf("Nao ha celebridade\n");
     else
         printf("%d\n", res);
     
-    for (int i = 0; i < 5; i++)
-        free(celebs[i]);
-    free(celebs);
+    liberaMatriz(5, mat);
 
     return 0;
 }
