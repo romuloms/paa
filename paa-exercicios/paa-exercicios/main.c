@@ -6,11 +6,12 @@
 //
 
 #include <stdio.h>
-#include <stdio.h>
+#include <time.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
 #include <math.h>
+
 
 #include "Structures.h"
 
@@ -215,24 +216,58 @@ int** criaMatrizQuadrada(int ordem)
     return matriz;
 }
 
-int** matriz1e0(int n) 
+int* vetorRandom(int n, bool muda)
+{
+    int* vetor = (int*) malloc(n * sizeof(int));
+    
+    if (muda)
+        srand(time(NULL));
+    
+    for (int i = 0; i < n; i++)
+    {
+        int randN = rand()%100;
+        vetor[i] = randN;
+    }
+    
+    return vetor;
+}
+
+int** matriz1e0(int n, bool muda)
 {
     int** mat = (int**) malloc (n * sizeof(int*));
-    
+
     for (int i = 0; i < n; i++)
         mat[i] = (int*) malloc (n * sizeof(int));
 
+    if (muda)
+        srand(time(NULL));
+    
     for (int i = 0; i < n; i++)
-      for (int j = 0; j < n; j++)
-          mat[i][j] = rand()%2;
+    {
+        for (int j = 0; j < n; j++)
+        {
+            int randN = rand()%2;
+            mat[i][j] = randN;
+            
+            if (i == j)
+                mat[i][j] = 1;
+        }
+    }
+
+
     return mat;
+}
+
+void liberaVetor(int n, int* vetor)
+{
+    free(vetor);
 }
 
 void liberaMatriz(int n, int** m) 
 {
-  for (int i = 0; i < n; i++)
-    free(m[i]);
-  free(m);
+    for (int i = 0; i < n; i++)
+        free(m[i]);
+    free(m);
 }
 
 int celebridade(int** matriz, int dimensao)
@@ -283,7 +318,7 @@ int celebridadeLinear(int n, int** conhece)
       return candidato;
 }
 
-void imprimeMatriz(int dimensao, int**matriz)
+void imprimeMatriz(int dimensao, int** matriz)
 {
     for (int i = 0; i < dimensao; i++)
     {
@@ -293,20 +328,94 @@ void imprimeMatriz(int dimensao, int**matriz)
     }
 }
 
+void imprimeVetor(int n, int* vetor)
+{
+    for (int i = 0; i < n; i++)
+        printf("%d ", vetor[i]);
+    printf("\n");
+}
+
+int* insertionSort(int n, int* vetor)
+{
+    printf("---insertion\n");
+
+    int v, j;
+    
+    for (int i = 1; i < n; i++)
+    {
+        v = vetor[i];
+        j = i - 1;
+        
+        while (j >= 0 && vetor[j] > v)
+        {
+            vetor[j+1] = vetor[j];
+            j = j - 1;
+        }
+        vetor[j+1] = v;
+    }
+    
+    return vetor;
+}
+
+int* selectionSort(int n, int* vetor)
+{
+    int min, aux;
+    
+    for (int i = 0; i < n - 1; i++)
+    {
+        min = i;
+        for (int j = i + 1; j < n; j++)
+            if (vetor[j] < vetor[min])
+                min = j;
+        aux = vetor[min];
+        vetor[min] = vetor[i];
+        vetor[i] = aux;
+    }
+    
+    return vetor;
+}
+
+int* bubbleSort(int n, int* vetor)
+{
+    int aux;
+    
+    for (int i = 0; i < n - 1; i++)
+        for (int j = 0; j < n - 1 - i; j++)
+            if (vetor[j+1] < vetor[j])
+            {
+                aux = vetor[j];
+                vetor[j] = vetor[j+1];
+                vetor[j+1] = aux;
+            }
+    
+    return vetor;
+}
+
+int buscaSequencial(int k, int n, int* vetor)
+{
+    int i = 0;
+    
+    while (vetor[i] != k)
+        i = i + 1;
+    if (i < n)
+        return i;
+    else
+        return -1;
+}
+
 int main(void) {
 //    LISTA l;
 //    int vetorUnicos[] = {11, 23, 39, 41, 15, 4};
 //    int** celebs = criaMatrizQuadrada(5);
 //    liberaMatriz(5, celebs);
-    int** mat = matriz1e0(5);
-    imprimeMatriz(5, mat);
-    int res = celebridadeLinear(5, mat);
-    if (res == -1)
-        printf("Nao ha celebridade\n");
-    else
-        printf("%d\n", res);
+//    int** mat = matriz1e0(5);
+//    liberaMatriz(5, mat);
+    int* vet = vetorRandom(8, false);
+    imprimeVetor(8, vet);
+    int num = buscaSequencial(78, 8, vet);
+    printf("%d\n", num);
     
-    liberaMatriz(5, mat);
+    liberaVetor(8, vet);
 
     return 0;
 }
