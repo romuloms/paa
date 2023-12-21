@@ -11,6 +11,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <math.h>
+#include <limits.h>
 
 
 #include "Structures.h"
@@ -318,11 +319,11 @@ int celebridadeLinear(int n, int** conhece)
     return candidato;
 }
 
-void imprimeMatriz(int dimensao, int** matriz)
+void imprimeMatriz(int linhas, int colunas, int** matriz)
 {
-    for (int i = 0; i < dimensao; i++)
+    for (int i = 0; i < linhas; i++)
     {
-        for (int j = 0; j < dimensao; j++)
+        for (int j = 0; j < colunas; j++)
             printf("%d ", matriz[i][j]);
         printf("\n");
     }
@@ -403,6 +404,59 @@ int buscaSequencial(int k, int n, int* vetor)
         return -1;
 }
 
+int** lePontos(int n)
+{
+    int** matriz = (int**) malloc(n * sizeof(int*));
+    
+    for (int i = 0; i < n; i++)
+        matriz[i] = (int*) malloc(2 * sizeof(int));
+    
+    for (int j = 0; j < n; j++)
+        for (int k = 0; k < 2; k++)
+            scanf("%d", &matriz[j][k]);
+    
+    return matriz;
+}
+
+int quadradoDistancia(int x1, int x2, int y1, int y2)
+{
+    int dQuadrado, subXq, subYq;
+    
+    subXq = pow((x1 - x2), 2);
+    subYq = pow((y1 - y2), 2);
+    dQuadrado = subXq + subYq;
+    
+    return dQuadrado;
+}
+
+void menorDistancia(int nPontos, int** pontos)
+{
+    float mDistancia = INT_MAX;
+    float distanciaAux;
+    int aux = 0;
+    int* ptAtual = (int*) malloc(2 * sizeof(int));
+    
+    ptAtual = pontos[0];
+    
+    for (int i = 1; i < nPontos; i++)
+    {
+        distanciaAux = quadradoDistancia(ptAtual[0], pontos[i][0], ptAtual[1], pontos[i][1]);
+        
+        if (mDistancia > distanciaAux)
+            mDistancia = distanciaAux;
+        if ((i == nPontos - 1) && (aux < nPontos - 1))
+        {
+            i = aux + 1;
+            ptAtual = pontos[aux + 1];
+            aux++;
+        }
+    }
+    
+    mDistancia = sqrtf(mDistancia);
+    
+    printf("%.4f\n", mDistancia);
+}
+
 int main(void) {
 //    LISTA l;
 //    int vetorUnicos[] = {11, 23, 39, 41, 15, 4};
@@ -410,12 +464,16 @@ int main(void) {
 //    liberaMatriz(5, celebs);
 //    int** mat = matriz1e0(5);
 //    liberaMatriz(5, mat);
-    int* vet = vetorRandom(8, false);
-    imprimeVetor(8, vet);
-    int num = buscaSequencial(78, 8, vet);
-    printf("%d\n", num);
+//    int* vet = vetorRandom(8, false);
+//    imprimeVetor(8, vet);
+//    int num = buscaSequencial(78, 8, vet);
+//    printf("%d\n", num);
+//    liberaVetor(8, vet);
+    int** pontos = lePontos(5);
+//    imprimeMatriz(4, 2, pontos);
+    menorDistancia(5, pontos);
+    liberaMatriz(5, pontos);
     
-    liberaVetor(8, vet);
 
     return 0;
 }
