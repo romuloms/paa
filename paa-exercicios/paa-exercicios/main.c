@@ -315,7 +315,7 @@ int celebridadeLinear(int n, int** conhece)
               return -1;
     }
 
-      return candidato;
+    return candidato;
 }
 
 void imprimeMatriz(int dimensao, int** matriz)
