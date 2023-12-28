@@ -13,9 +13,9 @@
 #include <math.h>
 #include <limits.h>
 
-
 #include "Structures.h"
 
+#define MAX(a,b) ((a) > (b) ? (a) : (b))
 
 void imprimirStatus(LISTA *l)
 {
@@ -457,11 +457,44 @@ void menorDistancia(int nPontos, int** pontos)
     printf("%.4f\n", mDistancia);
 }
 
+int busca(int k, int n, int** matriz)
+{
+    int j = n - 1;
+    int z = 0;
+    int alvo = matriz[z][j];
+    
+    for (int i = 0; i < n*2; i++)
+    {
+        if (alvo == k)
+            return k;
+        else if (alvo < k)
+        {
+            z++;
+            if (z == n)
+                break;
+            alvo = matriz[z][j];
+        }
+        else if (alvo > k)
+        {
+            j--;
+            if (j < 0)
+                break;
+            alvo = matriz[z][j];
+        }
+    }
+    
+    return 0;
+}
+
+
 int main(void) {
 //    LISTA l;
 //    int vetorUnicos[] = {11, 23, 39, 41, 15, 4};
-//    int** celebs = criaMatrizQuadrada(5);
-//    liberaMatriz(5, celebs);
+//    int** matBusca = criaMatrizQuadrada(4);
+//    imprimeMatriz(4, 4, matBusca);
+//    int result = busca(-22, 4, matBusca);
+//    printf("resultado da busca: %d\n", result);
+//    liberaMatriz(4, matBusca);
 //    int** mat = matriz1e0(5);
 //    liberaMatriz(5, mat);
 //    int* vet = vetorRandom(8, false);
@@ -469,11 +502,9 @@ int main(void) {
 //    int num = buscaSequencial(78, 8, vet);
 //    printf("%d\n", num);
 //    liberaVetor(8, vet);
-    int** pontos = lePontos(5);
+//    int** pontos = lePontos(5);
 //    imprimeMatriz(4, 2, pontos);
-    menorDistancia(5, pontos);
-    liberaMatriz(5, pontos);
-    
+//    liberaMatriz(5, pontos);
 
     return 0;
 }
