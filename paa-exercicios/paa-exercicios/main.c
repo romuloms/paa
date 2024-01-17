@@ -259,11 +259,6 @@ int** matriz1e0(int n, bool muda)
     return mat;
 }
 
-void liberaVetor(int n, int* vetor)
-{
-    free(vetor);
-}
-
 void liberaMatriz(int n, int** m) 
 {
     for (int i = 0; i < n; i++)
@@ -486,25 +481,55 @@ int busca(int k, int n, int** matriz)
     return 0;
 }
 
+int* leVetor(int tamanho)
+{
+    int* vetor = (int*)malloc(tamanho * sizeof(int));
+    
+    for (int i = 0; i < tamanho; i++)
+        scanf("%d", &vetor[i]);
+    
+    return vetor;
+}
+
+int posicao(int tamanho, int* vetor, int chave)
+{
+    int pos = -1;
+    
+    for (int i = 0; i < tamanho; i++)
+        if (vetor[i] == chave)
+            pos = i;
+    
+    return pos;
+}
 
 int main(void) {
 //    LISTA l;
-//    int vetorUnicos[] = {11, 23, 39, 41, 15, 4};
-//    int** matBusca = criaMatrizQuadrada(4);
-//    imprimeMatriz(4, 4, matBusca);
-//    int result = busca(-22, 4, matBusca);
-//    printf("resultado da busca: %d\n", result);
-//    liberaMatriz(4, matBusca);
-//    int** mat = matriz1e0(5);
-//    liberaMatriz(5, mat);
 //    int* vet = vetorRandom(8, false);
 //    imprimeVetor(8, vet);
 //    int num = buscaSequencial(78, 8, vet);
 //    printf("%d\n", num);
 //    liberaVetor(8, vet);
-//    int** pontos = lePontos(5);
-//    imprimeMatriz(4, 2, pontos);
-//    liberaMatriz(5, pontos);
+    int n;
+    scanf("%d", &n);
+    int* cpfs = leVetor(n);
+    int* notas = leVetor(n);
 
+    int m;
+    scanf("%d", &m);
+    for (int j = 0; j < m; j++)
+    {
+        int cpf;
+        scanf("%d", &cpf);
+        int pos = posicao(n, cpfs, cpf);
+        if (pos == -1)
+            printf("NAO SE APRESENTOU\n");
+        else
+            printf("%d\n", notas[pos]);
+    }
+    
+    
+    free(cpfs);
+    free(notas);
+    
     return 0;
 }
