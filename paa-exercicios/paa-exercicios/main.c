@@ -502,6 +502,85 @@ int posicao(int tamanho, int* vetor, int chave)
     return pos;
 }
 
+int buscaBinaria(int tamanho, int* vetor, int chave)
+{
+    int baixo = 0, alto = tamanho - 1, medio;
+    
+    while (baixo <= alto)
+    {
+        medio = floor((baixo + alto)/2);
+        if (chave == vetor[medio])
+            return medio;
+        else if (chave < vetor[medio])
+            alto = medio - 1;
+        else
+            baixo = medio + 1;
+    }
+    
+    return -1;
+}
+
+void swap(int *a, int *b) {
+   int temp = *a;
+   *a = *b;
+   *b = temp;
+}
+
+void reverter(int arr[], int inicio, int fim) {
+   while (inicio < fim) {
+       swap(&arr[inicio], &arr[fim]);
+       inicio++;
+       fim--;
+   }
+}
+
+void lexicographicPermute(int n) {
+   int arr[n];
+   int i, j;
+
+   // Initialize the first permutation
+   for (i = 0; i < n; i++) {
+       arr[i] = i + 1;
+   }
+
+   // Print the first permutation
+   for (i = 0; i < n; i++) {
+       printf("%d ", arr[i]);
+   }
+   printf("\n");
+
+   // Generate subsequent permutations
+   while (1) {
+       // Find the largest index i such that arr[i] < arr[i+1]
+       i = n - 2;
+       while (i >= 0 && arr[i] >= arr[i + 1]) {
+           i--;
+       }
+
+       if (i < 0) {  // No more permutations
+           break;
+       }
+
+       // Find the largest index j such that arr[i] < arr[j]
+       j = n - 1;
+       while (arr[i] >= arr[j]) {
+           j--;
+       }
+
+       // Swap arr[i] and arr[j]
+       swap(&arr[i], &arr[j]);
+
+       // Reverse the elements from arr[i+1] to arr[n-1]
+       reverter(arr, i + 1, n - 1);
+
+       // Print the new permutation
+       for (i = 0; i < n; i++) {
+           printf("%d ", arr[i]);
+       }
+       printf("\n");
+   }
+}
+
 int main(void) {
 //    LISTA l;
 //    int* vet = vetorRandom(8, false);
@@ -510,26 +589,10 @@ int main(void) {
 //    printf("%d\n", num);
 //    liberaVetor(8, vet);
     int n;
+    printf("Enter a positive integer: ");
     scanf("%d", &n);
-    int* cpfs = leVetor(n);
-    int* notas = leVetor(n);
 
-    int m;
-    scanf("%d", &m);
-    for (int j = 0; j < m; j++)
-    {
-        int cpf;
-        scanf("%d", &cpf);
-        int pos = posicao(n, cpfs, cpf);
-        if (pos == -1)
-            printf("NAO SE APRESENTOU\n");
-        else
-            printf("%d\n", notas[pos]);
-    }
-    
-    
-    free(cpfs);
-    free(notas);
+    lexicographicPermute(n);
     
     return 0;
 }
