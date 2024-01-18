@@ -327,19 +327,25 @@ void imprimeMatriz(int linhas, int colunas, int** matriz)
 void imprimeVetor(int n, int* vetor)
 {
     for (int i = 0; i < n; i++)
-        printf("%d ", vetor[i]);
+    {
+        if (vetor[i] == 0)
+            break;
+        printf("%d\n", vetor[i]);
+    }
     printf("\n");
 }
 
 int* insertionSort(int n, int* vetor)
 {
-    printf("---insertion\n");
+//    printf("---insertion\n");
 
     int v, j;
     
     for (int i = 1; i < n; i++)
     {
         v = vetor[i];
+        if (v == 0)
+            break;
         j = i - 1;
         
         while (j >= 0 && vetor[j] > v)
@@ -581,6 +587,119 @@ void lexicographicPermute(int n) {
    }
 }
 
+
+int bitcoin(int* arr, int tamanho)
+{
+    int maior = arr[0];
+    
+    for (int i = 1; i < tamanho; i++)
+    {
+        if (maior < arr[i])
+            maior = arr[i];
+        else if (maior > arr[i+1])
+            break;
+    }
+    
+    return maior;
+}
+
+#define MAXIMO 1000000
+
+typedef struct
+{
+    int chave;
+    int proximo;
+} ParChaveValor;
+
+typedef struct
+{
+    ParChaveValor pares[MAXIMO];
+    int tamanho;
+} Dicionario;
+
+void inicializaDic(Dicionario *dicionario)
+{
+    dicionario->tamanho = 0;
+}
+
+void addPar(Dicionario *dicionario, const int chave, int valor)
+{
+    if (dicionario->tamanho < MAXIMO)
+    {
+        dicionario->pares[dicionario->tamanho].chave = chave;
+        dicionario->pares[dicionario->tamanho].proximo = valor;
+        dicionario->tamanho++;
+    }
+}
+
+int getValor(const Dicionario *dicionario, int chave)
+{
+    for (int i = 0; i < dicionario->tamanho; i++)
+        if (dicionario->pares[i].chave == chave)
+            return dicionario->pares[i].proximo;
+    
+    return -1;
+}
+
+void populaDic(int n, Dicionario *dicionario)
+{
+    for (int i = 1; i <= n; i++)
+    {
+        int val;
+        scanf("%d", &val);
+        addPar(dicionario, i, val);
+    }
+}
+
+void exibeDic(Dicionario *dicionario)
+{
+    for (int i = 1; i <= dicionario->tamanho; i++)
+        printf("Valor associado a chave %d: %d\n", i, getValor(dicionario, i));
+}
+
+void exibeParEspecifico(int chave, Dicionario *dicionario)
+{
+    printf("Valor associado a chave %d: %d\n", chave, getValor(dicionario, chave));
+}
+
+void tamanhoDic(Dicionario *dicionario)
+{
+    printf("Tamanho do dicionario: %d\n", dicionario->tamanho);
+}
+
+int* ciclo(Dicionario *dicionario)
+{
+    int* cicloAmigos = (int*)malloc((dicionario->tamanho) * sizeof(int));
+    int contador = 0;
+    
+    for (int i = 1; i <= dicionario->tamanho; i++)
+    {
+        int chaveInicial = dicionario->pares[i].chave;
+        
+        for (int j = 1; j <= dicionario->tamanho; j++)
+        {
+            int vizinho = dicionario->pares[j].proximo;
+            if (dicionario->pares[vizinho].proximo == chaveInicial)
+            {
+                cicloAmigos[contador] = chaveInicial;
+//                printf("%d\n", cicloAmigos[contador]);
+                contador++;
+                int aux = dicionario->pares[chaveInicial-1].proximo;
+                while (aux != chaveInicial)
+                {
+                    cicloAmigos[contador] = aux;
+//                    printf("%d\n", cicloAmigos[contador]);
+                    contador++;
+                    aux = dicionario->pares[aux-1].proximo;
+                }
+                return cicloAmigos;
+            }
+        }
+    }
+    
+    return cicloAmigos;
+}
+
 int main(void) {
 //    LISTA l;
 //    int* vet = vetorRandom(8, false);
@@ -588,11 +707,24 @@ int main(void) {
 //    int num = buscaSequencial(78, 8, vet);
 //    printf("%d\n", num);
 //    liberaVetor(8, vet);
+//    int tam = sizeof(amigos) / sizeof(amigos[0]);
     int n;
-    printf("Enter a positive integer: ");
     scanf("%d", &n);
+    Dicionario dic;
+    inicializaDic(&dic);
+    populaDic(n, &dic);
+//    exibeDic(&dic);
+//    tamanhoDic(&dic);
+    int* amg = ciclo(&dic);
+    amg = insertionSort(MAXIMO, amg);
+    imprimeVetor(MAXIMO, amg);
+//    addPar(&dic, 1, 10);
+    
+//    free(dic.pares);
+    
+//    printf("Valor associado a chave 2: %d\n", getValor(&dic, 2));
+//    printf("Valor associado a chave 4: %d\n", getValor(&dic, 4));
 
-    lexicographicPermute(n);
     
     return 0;
 }
