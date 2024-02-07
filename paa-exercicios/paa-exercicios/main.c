@@ -15,6 +15,7 @@
 
 #include "Structures.h"
 
+#define MAXIMO 1000000
 #define MAX(a,b) ((a) > (b) ? (a) : (b))
 
 void imprimirStatus(LISTA *l)
@@ -609,69 +610,6 @@ int bitcoin(int* arr, int tamanho)
     return maior;
 }
 
-#define MAXIMO 1000000
-
-typedef struct
-{
-    int chave;
-    int proximo;
-} ParChaveValor;
-
-typedef struct
-{
-    ParChaveValor pares[MAXIMO];
-    int tamanho;
-} Dicionario;
-
-void inicializaDic(Dicionario *dicionario)
-{
-    dicionario->tamanho = 0;
-}
-
-void addPar(Dicionario *dicionario, const int chave, int valor)
-{
-    if (dicionario->tamanho < MAXIMO)
-    {
-        dicionario->pares[dicionario->tamanho].chave = chave;
-        dicionario->pares[dicionario->tamanho].proximo = valor;
-        dicionario->tamanho++;
-    }
-}
-
-int getValor(const Dicionario *dicionario, int chave)
-{
-    for (int i = 0; i < dicionario->tamanho; i++)
-        if (dicionario->pares[i].chave == chave)
-            return dicionario->pares[i].proximo;
-    
-    return -1;
-}
-
-void populaDic(int n, Dicionario *dicionario)
-{
-    for (int i = 1; i <= n; i++)
-    {
-        int val;
-        scanf("%d", &val);
-        addPar(dicionario, i, val);
-    }
-}
-
-void exibeDic(Dicionario *dicionario)
-{
-    for (int i = 1; i <= dicionario->tamanho; i++)
-        printf("Valor associado a chave %d: %d\n", i, getValor(dicionario, i));
-}
-
-void exibeParEspecifico(int chave, Dicionario *dicionario)
-{
-    printf("Valor associado a chave %d: %d\n", chave, getValor(dicionario, chave));
-}
-
-void tamanhoDic(Dicionario *dicionario)
-{
-    printf("Tamanho do dicionario: %d\n", dicionario->tamanho);
-}
 
 void merge(int arr[], int esquerda, int meio, int direita)
 {
@@ -728,65 +666,6 @@ void merge_sort(int arr[], int esquerda, int direita)
     }
 }
 
-int funcAux(Dicionario *dic, int chaveIn, int viz)
-{
-    int aux = 0, resultado = 0, tam = 0;
-
-    while (chaveIn != viz)
-    {
-        if (dic->pares[viz-1].proximo == 0)
-            return 0;
-        viz = dic->pares[viz-1].proximo;
-        
-        if (viz == dic->pares[dic->tamanho-1].chave)
-        {
-            aux++;
-            chaveIn = dic->pares[aux].chave;
-        }
-        if (viz == dic->pares[viz-1].proximo)
-            break;
-        tam++;
-        if (tam == dic->tamanho)
-            break;
-    }
-    resultado = viz;
-    
-    return resultado;
-}
-
-void ciclo(Dicionario *dicionario)
-{
-    int* cicloAmigos = (int*)malloc((dicionario->tamanho) * sizeof(int));
-    int contador = 0, aux = 0, tam = 0;
-    int chaveInicial = dicionario->pares[aux].chave;
-    int vizinho = dicionario->pares[chaveInicial-1].proximo;
-    int cobaia;
-//    int metade = ceil((dicionario->tamanho - 1)/2);
-
-    int res = funcAux(dicionario, chaveInicial, vizinho);
-
-    vizinho = res;
-    cobaia = vizinho;
-    while (res <= dicionario->pares[dicionario->tamanho-1].chave)
-    {
-        cicloAmigos[contador] = vizinho;
-        tam++;
-        contador++;
-        if (vizinho == dicionario->pares[vizinho-1].proximo)
-            vizinho = dicionario->pares[vizinho].proximo;
-        else
-            vizinho = dicionario->pares[vizinho-1].proximo;
-        if (cobaia == vizinho)
-            break;
-        res = funcAux(dicionario, chaveInicial, vizinho);
-        cobaia = res;
-        if (res == 0)
-            break;
-    }
-    
-    merge_sort(cicloAmigos, 0, tam - 1);
-    imprimeVetor(tam, cicloAmigos);
-}
 
 int main(void) {
 //    LISTA l;
@@ -798,10 +677,6 @@ int main(void) {
 //    int tam = sizeof(amigos) / sizeof(amigos[0]);
     int n;
     scanf("%d", &n);
-    Dicionario dic;
-    inicializaDic(&dic);
-    populaDic(n, &dic);
-    ciclo(&dic);
 //    int arr_size = (sizeof(amg) / sizeof(amg[0]))*(4);
 
 //    printf("Valor associado a chave 2: %d\n", getValor(&dic, 2));
