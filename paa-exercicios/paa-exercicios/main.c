@@ -326,11 +326,17 @@ void imprimeMatriz(int linhas, int colunas, int** matriz)
 
 void imprimeVetor(int n, int* vetor)
 {
-    for (int i = 0; i < n; i++)
+    int i = 0;
+    while (i < n)
     {
         if (vetor[i] == 0)
-            break;
-        printf("%d\n", vetor[i]);
+            i++;
+        else
+        {
+            printf("%d\n", vetor[i]);
+            i++;
+        }
+
     }
     printf("\n");
 }
@@ -667,37 +673,119 @@ void tamanhoDic(Dicionario *dicionario)
     printf("Tamanho do dicionario: %d\n", dicionario->tamanho);
 }
 
-int* ciclo(Dicionario *dicionario)
+void merge(int arr[], int esquerda, int meio, int direita)
+{
+    int i, j, k;
+    int n1 = meio - esquerda + 1;
+    int n2 = direita - meio;
+
+    int *arrEsq = (int *)malloc(n1 * sizeof(int));
+    int *arrDir = (int *)malloc(n2 * sizeof(int));
+
+    for (i = 0; i < n1; i++)
+        arrEsq[i] = arr[esquerda + i];
+    for (j = 0; j < n2; j++)
+        arrDir[j] = arr[meio + 1 + j];
+
+    i = 0;
+    j = 0;
+    k = esquerda;
+    while (i < n1 && j < n2) {
+        if (arrEsq[i] <= arrDir[j]) {
+            arr[k] = arrEsq[i];
+            i++;
+        } else {
+            arr[k] = arrDir[j];
+            j++;
+        }
+        k++;
+    }
+
+    while (i < n1) {
+        arr[k] = arrEsq[i];
+        i++;
+        k++;
+    }
+
+    while (j < n2) {
+        arr[k] = arrDir[j];
+        j++;
+        k++;
+    }
+
+    free(arrEsq);
+    free(arrDir);
+}
+
+void merge_sort(int arr[], int esquerda, int direita)
+{
+    if (esquerda < direita) {
+        int meio = esquerda + (direita - esquerda) / 2;
+
+        merge_sort(arr, esquerda, meio);
+        merge_sort(arr, meio + 1, direita);
+        merge(arr, esquerda, meio, direita);
+    }
+}
+
+int funcAux(Dicionario *dic, int chaveIn, int viz)
+{
+    int aux = 0, resultado = 0, tam = 0;
+
+    while (chaveIn != viz)
+    {
+        if (dic->pares[viz-1].proximo == 0)
+            return 0;
+        viz = dic->pares[viz-1].proximo;
+        
+        if (viz == dic->pares[dic->tamanho-1].chave)
+        {
+            aux++;
+            chaveIn = dic->pares[aux].chave;
+        }
+        if (viz == dic->pares[viz-1].proximo)
+            break;
+        tam++;
+        if (tam == dic->tamanho)
+            break;
+    }
+    resultado = viz;
+    
+    return resultado;
+}
+
+void ciclo(Dicionario *dicionario)
 {
     int* cicloAmigos = (int*)malloc((dicionario->tamanho) * sizeof(int));
-    int contador = 0;
-    
-    for (int i = 1; i <= dicionario->tamanho; i++)
+    int contador = 0, aux = 0, tam = 0;
+    int chaveInicial = dicionario->pares[aux].chave;
+    int vizinho = dicionario->pares[chaveInicial-1].proximo;
+    int cobaia;
+//    int metade = ceil((dicionario->tamanho - 1)/2);
+
+    int res = funcAux(dicionario, chaveInicial, vizinho);
+
+    vizinho = res;
+    cobaia = vizinho;
+    while (res <= dicionario->pares[dicionario->tamanho-1].chave)
     {
-        int chaveInicial = dicionario->pares[i].chave;
-        
-        for (int j = 1; j <= dicionario->tamanho; j++)
-        {
-            int vizinho = dicionario->pares[j].proximo;
-            if (dicionario->pares[vizinho].proximo == chaveInicial)
-            {
-                cicloAmigos[contador] = chaveInicial;
-//                printf("%d\n", cicloAmigos[contador]);
-                contador++;
-                int aux = dicionario->pares[chaveInicial-1].proximo;
-                while (aux != chaveInicial)
-                {
-                    cicloAmigos[contador] = aux;
-//                    printf("%d\n", cicloAmigos[contador]);
-                    contador++;
-                    aux = dicionario->pares[aux-1].proximo;
-                }
-                return cicloAmigos;
-            }
-        }
+        cicloAmigos[contador] = vizinho;
+        tam++;
+        contador++;
+        if (vizinho == dicionario->pares[vizinho-1].proximo)
+            vizinho = dicionario->pares[vizinho].proximo;
+        else
+            vizinho = dicionario->pares[vizinho-1].proximo;
+        if (cobaia == vizinho)
+            break;
+        res = funcAux(dicionario, chaveInicial, vizinho);
+        cobaia = res;
+        if (res == 0)
+            break;
     }
     
-    return cicloAmigos;
+    merge_sort(cicloAmigos, 0, tam - 1);
+    imprimeVetor(tam, cicloAmigos);
 }
 
 int main(void) {
@@ -713,15 +801,9 @@ int main(void) {
     Dicionario dic;
     inicializaDic(&dic);
     populaDic(n, &dic);
-//    exibeDic(&dic);
-//    tamanhoDic(&dic);
-    int* amg = ciclo(&dic);
-    amg = insertionSort(MAXIMO, amg);
-    imprimeVetor(MAXIMO, amg);
-//    addPar(&dic, 1, 10);
-    
-//    free(dic.pares);
-    
+    ciclo(&dic);
+//    int arr_size = (sizeof(amg) / sizeof(amg[0]))*(4);
+
 //    printf("Valor associado a chave 2: %d\n", getValor(&dic, 2));
 //    printf("Valor associado a chave 4: %d\n", getValor(&dic, 4));
 
