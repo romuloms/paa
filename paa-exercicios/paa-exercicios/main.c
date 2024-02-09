@@ -267,6 +267,13 @@ void liberaMatriz(int n, int** m)
     free(m);
 }
 
+void liberaMatrizFloat(int n, float** m)
+{
+    for (int i = 0; i < n; i++)
+        free(m[i]);
+    free(m);
+}
+
 int celebridade(int** matriz, int dimensao)
 {
     int celeb = -1;
@@ -321,6 +328,16 @@ void imprimeMatriz(int linhas, int colunas, int** matriz)
     {
         for (int j = 0; j < colunas; j++)
             printf("%d ", matriz[i][j]);
+        printf("\n");
+    }
+}
+
+void imprimeMatrizFloat(int linhas, int colunas, float** matriz)
+{
+    for (int i = 0; i < linhas; i++)
+    {
+        for (int j = 0; j < colunas; j++)
+            printf("%.2f ", matriz[i][j]);
         printf("\n");
     }
 }
@@ -422,6 +439,20 @@ int** lePontos(int n)
     for (int j = 0; j < n; j++)
         for (int k = 0; k < 2; k++)
             scanf("%d", &matriz[j][k]);
+    
+    return matriz;
+}
+
+float** lePontosFloat(int n)
+{
+    float** matriz = (float**) malloc(n * sizeof(float*));
+    
+    for (int i = 0; i < n; i++)
+        matriz[i] = (float*) malloc(2 * sizeof(float));
+    
+    for (int j = 0; j < n; j++)
+        for (int k = 0; k < 2; k++)
+            scanf("%f", &matriz[j][k]);
     
     return matriz;
 }
@@ -552,33 +583,29 @@ void lexicographicPermute(int n) {
    int i, j;
 
    // Initialize the first permutation
-   for (i = 0; i < n; i++) {
+   for (i = 0; i < n; i++)
        arr[i] = i + 1;
-   }
 
    // Print the first permutation
-   for (i = 0; i < n; i++) {
+   for (i = 0; i < n; i++)
        printf("%d ", arr[i]);
-   }
    printf("\n");
 
    // Generate subsequent permutations
-   while (1) {
+   while (1) 
+   {
        // Find the largest index i such that arr[i] < arr[i+1]
        i = n - 2;
-       while (i >= 0 && arr[i] >= arr[i + 1]) {
+       while (i >= 0 && arr[i] >= arr[i + 1])
            i--;
-       }
 
-       if (i < 0) {  // No more permutations
+       if (i < 0)  // No more permutations
            break;
-       }
 
        // Find the largest index j such that arr[i] < arr[j]
        j = n - 1;
-       while (arr[i] >= arr[j]) {
+       while (arr[i] >= arr[j])
            j--;
-       }
 
        // Swap arr[i] and arr[j]
        swap(&arr[i], &arr[j]);
@@ -587,9 +614,8 @@ void lexicographicPermute(int n) {
        reverter(arr, i + 1, n - 1);
 
        // Print the new permutation
-       for (i = 0; i < n; i++) {
+       for (i = 0; i < n; i++)
            printf("%d ", arr[i]);
-       }
        printf("\n");
    }
 }
@@ -666,6 +692,56 @@ void merge_sort(int arr[], int esquerda, int direita)
     }
 }
 
+float** convexHull(int n, float** pontos)
+{
+    float a, b, c, *p1, *p2, *pTeste;
+    int quantPontos = 0, tamanho = 0, neutros = 0;
+    float** vertices = (float**) malloc(n * sizeof(float*));
+    
+    for (int i = 0; i < n; i++)
+        vertices[i] = (float*) malloc(2 * sizeof(float));
+    
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < n; j++)
+        {
+            if (i != j)
+            {
+                p1 = pontos[i];
+                p2 = pontos[j];
+                // reta
+                a = p2[1] - p1[1];
+                b = p1[0] - p2[0];
+                c = (p1[0] * p2[1]) - (p1[1] * p2[0]);
+                
+                // comparar o restante dos pontos
+                for (int k = 0; k < n; k++)
+                {
+                    if (k != i && k != j)
+                    {
+                        pTeste = pontos[k];
+                        
+                        if (a*pTeste[0] + b*pTeste[1] > c)
+                            quantPontos++;
+                        if (a*pTeste[0] + b*pTeste[1] < c)
+                            quantPontos--;
+                        if (a*pTeste[0] + b*pTeste[1] == c)
+                            neutros++;
+                    }
+                }
+                
+                if (quantPontos == n - 2 - neutros || quantPontos == n*(-1) + 2 + neutros)
+                {
+                    vertices[tamanho] = p2;
+                    tamanho++;
+                }
+                quantPontos = 0;
+            }
+        }
+    }
+    
+    return vertices;
+}
 
 int main(void) {
 //    LISTA l;
@@ -677,11 +753,15 @@ int main(void) {
 //    int tam = sizeof(amigos) / sizeof(amigos[0]);
     int n;
     scanf("%d", &n);
+    float** pontos = lePontosFloat(n);
+    float** vertices = convexHull(n, pontos);
+    printf("---------\n");
+    imprimeMatrizFloat(n, 2, vertices);
+    
+    liberaMatrizFloat(n, pontos);
+//    liberaMatriz(n, vertices);
+    
 //    int arr_size = (sizeof(amg) / sizeof(amg[0]))*(4);
-
-//    printf("Valor associado a chave 2: %d\n", getValor(&dic, 2));
-//    printf("Valor associado a chave 4: %d\n", getValor(&dic, 4));
-
     
     return 0;
 }
