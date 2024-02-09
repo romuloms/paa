@@ -12,6 +12,7 @@
 #include <stdbool.h>
 #include <math.h>
 #include <limits.h>
+#include <time.h>
 
 #include "Structures.h"
 
@@ -692,14 +693,81 @@ void merge_sort(int arr[], int esquerda, int direita)
     }
 }
 
-float** convexHull(int n, float** pontos)
+typedef struct Ponto
 {
-    float a, b, c, *p1, *p2, *pTeste;
-    int quantPontos = 0, tamanho = 0, neutros = 0;
-    float** vertices = (float**) malloc(n * sizeof(float*));
-    
+    float x;
+    float y;
+} Ponto;
+
+void imprimePt(int n, Ponto* pontos)
+{
+    for(int i = 0; i < n; i++){
+      printf("%.4f %.4f\n", pontos[i].x, pontos[i].y);
+    }
+}
+
+bool estaNaMatrizFloat(int n, Ponto* pontos, Ponto elemento)
+{
     for (int i = 0; i < n; i++)
-        vertices[i] = (float*) malloc(2 * sizeof(float));
+        if ((pontos[i].x == elemento.x) && (pontos[i].y == elemento.y))
+            return true;
+    
+    return false;
+}
+
+void removeRepetidoFloat(int *n, Ponto* pontos)
+{
+    if (*n <= 1)
+        return;
+    
+    int novoTamanho = 0;
+    Ponto* tempArray = (Ponto*) malloc(*n * sizeof(Ponto));
+    
+    for (int i = 0; i < *n; i++)
+    {
+//        if (pontos[i] == NULL)
+//            break;
+        if (!estaNaMatrizFloat(novoTamanho, tempArray, pontos[i]))
+            tempArray[novoTamanho++] = pontos[i];
+    }
+    
+    for (int i = 0; i < novoTamanho; i ++)
+        pontos[i] = tempArray[i];
+    
+    *n = novoTamanho;
+}
+
+void selectSortPontosX(int n, Ponto* vetor)
+{
+    int min;
+    Ponto aux;
+    
+    for (int i = 0; i < n - 1; i++)
+    {
+        min = i;
+        for (int j = i + 1; j < n; j++)
+        {
+//            if (vetor[j] == NULL)
+//                break;
+            if (vetor[j].x < vetor[min].x)
+                min = j;
+            if (vetor[j].x == vetor[min].x)
+                if (vetor[j].y < vetor[min].y)
+                    min = j;
+        }
+        
+        aux = vetor[min];
+        vetor[min] = vetor[i];
+        vetor[i] = aux;
+    }
+}
+
+void convexHull(int n, Ponto* pontos)
+{
+    float a, b, c;
+    Ponto *p1, *p2, *pTeste;
+    int quantPontos = 0, tamanho = 0;
+    Ponto* vertices = (Ponto*) malloc(n * sizeof(Ponto));
     
     for (int i = 0; i < n; i++)
     {
@@ -707,69 +775,45 @@ float** convexHull(int n, float** pontos)
         {
             if (i != j)
             {
-                p1 = pontos[i];
-                p2 = pontos[j];
+                p1 = &pontos[i];
+                p2 = &pontos[j];
                 // reta
-                a = p2[1] - p1[1];
-                b = p1[0] - p2[0];
-                c = (p1[0] * p2[1]) - (p1[1] * p2[0]);
+                a = p2->y - p1->y;
+                b = p1->x - p2->x;
+                c = (p1->x * p2->y) - (p1->y * p2->x);
                 
                 // comparar o restante dos pontos
                 for (int k = 0; k < n; k++)
                 {
                     if (k != i && k != j)
                     {
-                        pTeste = pontos[k];
+                        pTeste = &pontos[k];
                         
-                        if (a*pTeste[0] + b*pTeste[1] > c)
+                        if (a*pTeste->x + b*pTeste->y - c > 0)
                             quantPontos++;
-                        if (a*pTeste[0] + b*pTeste[1] < c)
+                        if (a*pTeste->x + b*pTeste->y - c < 0)
                             quantPontos--;
-                        if (a*pTeste[0] + b*pTeste[1] == c)
-                            neutros++;
                     }
                 }
                 
-                if (quantPontos == n - 2 - neutros || quantPontos == n*(-1) + 2 + neutros)
+                if (quantPontos == n - 2|| quantPontos == n*(-1) + 2)
                 {
-                    vertices[tamanho] = p2;
+                    vertices[tamanho] = *p2;
                     tamanho++;
                 }
                 quantPontos = 0;
             }
         }
     }
-    
-    return vertices;
-}
+    printf("---------\n");
+    imprimePt(n, vertices);
+    removeRepetidoFloat(&n, vertices);
+    printf("---------\n");
+    imprimePt(n, vertices);
+    printf("---------\n");
+    selectSortPontosX(n, vertices);
+    imprimePt(n, vertices);
 
-bool estaNaMatrizFloat(int n, float** mat, float* elemento)
-{
-    for (int i = 0; i < n; i++)
-        if (mat[i] == elemento)
-            return true;
-    
-    return false;
-}
-
-void removeRepetidoFloat(int *n, float** mat)
-{
-    if (*n <= 1)
-        return;
-    
-    int novoTamanho = 0;
-    float** tempArray = (float**) malloc(*n * sizeof(float*));
-    for (int i = 0; i < *n; i++)
-        tempArray[i] = (float*) malloc(2 * sizeof(float));
-
-    for (int i = 0; i < *n; i++)
-        if (!estaNaMatrizFloat(novoTamanho, tempArray, mat[i]))
-            tempArray[novoTamanho++] = mat[i];
-    
-    for (int i = 0; i < novoTamanho; i ++)
-        mat[i] = tempArray[i];
-    
-    *n = novoTamanho;
 }
 
 int main(void) {
@@ -780,18 +824,28 @@ int main(void) {
 //    printf("%d\n", num);
 //    liberaVetor(8, vet);
 //    int tam = sizeof(amigos) / sizeof(amigos[0]);
+    // ======= instancia do timer ========
+    clock_t t1, t2;
+    t1 = t2 = clock();
+    
     int n;
     scanf("%d", &n);
-    float** pontos = lePontosFloat(n);
-    float** vertices = convexHull(n, pontos);
-    removeRepetidoFloat(&n, vertices);
-    printf("---------\n");
-    imprimeMatrizFloat(n, 2, vertices);
+//    float** pontos = lePontosFloat(n);
+    Ponto* pontos = (Ponto*) malloc(n * sizeof(Ponto));
+    for (int i = 0; i < n; i++)
+        scanf("%f %f", &pontos[i].x, &pontos[i].y);
     
-    liberaMatrizFloat(n, pontos);
-//    liberaMatriz(n, vertices);
+    convexHull(n, pontos);
+    free(pontos);
     
 //    int arr_size = (sizeof(amg) / sizeof(amg[0]))*(4);
     
+    // ======== timer ========
+    while(t1 == t2)
+            t2 = clock();
+
+    // exibicao do resultado do tempo gasto pelo codigo
+    printf("%f ms\n", (double)(t2 - t1) / CLOCKS_PER_SEC * 1000);
+
     return 0;
 }
