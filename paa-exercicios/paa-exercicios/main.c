@@ -6,7 +6,6 @@
 //
 
 #include <stdio.h>
-#include <time.h>
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
@@ -16,8 +15,10 @@
 
 #include "Structures.h"
 
-#define MAXIMO 1000000
+#define MAXIMO 1e6
 #define MAX(a,b) ((a) > (b) ? (a) : (b))
+#define COORD_MAXIMA 1.9e9
+
 
 void imprimirStatus(LISTA *l)
 {
@@ -702,7 +703,7 @@ typedef struct Ponto
 void imprimePt(int n, Ponto* pontos)
 {
     for(int i = 0; i < n; i++){
-      printf("%.4f %.4f\n", pontos[i].x, pontos[i].y);
+      printf("%.2f %.2f\n", pontos[i].x, pontos[i].y);
     }
 }
 
@@ -824,16 +825,28 @@ int main(void) {
 //    printf("%d\n", num);
 //    liberaVetor(8, vet);
 //    int tam = sizeof(amigos) / sizeof(amigos[0]);
+    
+    
     // ======= instancia do timer ========
     clock_t t1, t2;
     t1 = t2 = clock();
     
     int n;
     scanf("%d", &n);
-//    float** pontos = lePontosFloat(n);
     Ponto* pontos = (Ponto*) malloc(n * sizeof(Ponto));
-    for (int i = 0; i < n; i++)
-        scanf("%f %f", &pontos[i].x, &pontos[i].y);
+    Ponto ponto;
+//    for (int i = 0; i < n; i++)
+//        scanf("%f %f", &pontos[i].x, &pontos[i].y);
+    
+    srand((uint)time(NULL));
+    for (int i = 0; i < n;)
+    {
+        ponto.x = rand()%(long unsigned)COORD_MAXIMA;
+        ponto.y = rand()%(long unsigned)COORD_MAXIMA;
+        pontos[i++] = ponto;
+    }
+      for(int i = 0; i < n; i++)
+        printf("%.2f %.2f\n", pontos[i].x, pontos[i].y);
     
     convexHull(n, pontos);
     free(pontos);
@@ -845,7 +858,7 @@ int main(void) {
             t2 = clock();
 
     // exibicao do resultado do tempo gasto pelo codigo
-    printf("%f ms\n", (double)(t2 - t1) / CLOCKS_PER_SEC * 1000);
+    printf("%.2f ms\n", (double)(t2 - t1) / CLOCKS_PER_SEC * 1000);
 
     return 0;
 }
