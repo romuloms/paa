@@ -743,6 +743,35 @@ float** convexHull(int n, float** pontos)
     return vertices;
 }
 
+bool estaNaMatrizFloat(int n, float** mat, float* elemento)
+{
+    for (int i = 0; i < n; i++)
+        if (mat[i] == elemento)
+            return true;
+    
+    return false;
+}
+
+void removeRepetidoFloat(int *n, float** mat)
+{
+    if (*n <= 1)
+        return;
+    
+    int novoTamanho = 0;
+    float** tempArray = (float**) malloc(*n * sizeof(float*));
+    for (int i = 0; i < *n; i++)
+        tempArray[i] = (float*) malloc(2 * sizeof(float));
+
+    for (int i = 0; i < *n; i++)
+        if (!estaNaMatrizFloat(novoTamanho, tempArray, mat[i]))
+            tempArray[novoTamanho++] = mat[i];
+    
+    for (int i = 0; i < novoTamanho; i ++)
+        mat[i] = tempArray[i];
+    
+    *n = novoTamanho;
+}
+
 int main(void) {
 //    LISTA l;
 //    int* vet = vetorRandom(8, false);
@@ -755,6 +784,7 @@ int main(void) {
     scanf("%d", &n);
     float** pontos = lePontosFloat(n);
     float** vertices = convexHull(n, pontos);
+    removeRepetidoFloat(&n, vertices);
     printf("---------\n");
     imprimeMatrizFloat(n, 2, vertices);
     
