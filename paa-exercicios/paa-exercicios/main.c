@@ -763,7 +763,7 @@ void selectSortPontosX(int n, Ponto* vetor)
     }
 }
 
-void convexHull(int n, Ponto* pontos)
+int convexHull(int n, Ponto* pontos)
 {
     float a, b, c;
     Ponto *p1, *p2, *pTeste;
@@ -799,8 +799,10 @@ void convexHull(int n, Ponto* pontos)
                 
                 if (quantPontos == n - 2|| quantPontos == n*(-1) + 2)
                 {
+                    printf("i: %d, j: %d, p2.x: %.2f, p2.y: %.2f *************\n", i, j, p2->x, p2->y);
                     vertices[tamanho] = *p2;
                     tamanho++;
+                    printf("tamanho: %d, n: %d\n", tamanho, n);
                 }
                 quantPontos = 0;
             }
@@ -808,13 +810,14 @@ void convexHull(int n, Ponto* pontos)
     }
     printf("---------\n");
     imprimePt(n, vertices);
-    removeRepetidoFloat(&n, vertices);
+    removeRepetidoFloat(&tamanho, vertices);
     printf("---------\n");
-    imprimePt(n, vertices);
+    imprimePt(tamanho, vertices);
     printf("---------\n");
-    selectSortPontosX(n, vertices);
-    imprimePt(n, vertices);
+    selectSortPontosX(tamanho, vertices);
+    imprimePt(tamanho, vertices);
 
+    return tamanho;
 }
 
 int main(void) {
@@ -835,16 +838,16 @@ int main(void) {
     scanf("%d", &n);
     Ponto* pontos = (Ponto*) malloc(n * sizeof(Ponto));
     Ponto ponto;
-//    for (int i = 0; i < n; i++)
-//        scanf("%f %f", &pontos[i].x, &pontos[i].y);
+    for (int i = 0; i < n; i++)
+        scanf("%f %f", &pontos[i].x, &pontos[i].y);
     
-    srand((uint)time(NULL));
-    for (int i = 0; i < n;)
-    {
-        ponto.x = rand()%(long unsigned)COORD_MAXIMA;
-        ponto.y = rand()%(long unsigned)COORD_MAXIMA;
-        pontos[i++] = ponto;
-    }
+//    srand((uint)time(NULL));
+//    for (int i = 0; i < n;)
+//    {
+//        ponto.x = rand()%(long unsigned)200;
+//        ponto.y = rand()%(long unsigned)200;
+//        pontos[i++] = ponto;
+//    }
       for(int i = 0; i < n; i++)
         printf("%.2f %.2f\n", pontos[i].x, pontos[i].y);
     
