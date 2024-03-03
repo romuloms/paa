@@ -353,10 +353,9 @@ void imprimeVetor(int n, int* vetor)
             i++;
         else
         {
-            printf("%d\n", vetor[i]);
+            printf("%d ", vetor[i]);
             i++;
         }
-
     }
     printf("\n");
 }
@@ -639,59 +638,71 @@ int bitcoin(int* arr, int tamanho)
 }
 
 
-void merge(int arr[], int esquerda, int meio, int direita)
+void merge(int* vetA, int* vetB, int* vetC, int tamB, int tamC)
 {
-    int i, j, k;
-    int n1 = meio - esquerda + 1;
-    int n2 = direita - meio;
-
-    int *arrEsq = (int *)malloc(n1 * sizeof(int));
-    int *arrDir = (int *)malloc(n2 * sizeof(int));
-
-    for (i = 0; i < n1; i++)
-        arrEsq[i] = arr[esquerda + i];
-    for (j = 0; j < n2; j++)
-        arrDir[j] = arr[meio + 1 + j];
-
-    i = 0;
-    j = 0;
-    k = esquerda;
-    while (i < n1 && j < n2) {
-        if (arrEsq[i] <= arrDir[j]) {
-            arr[k] = arrEsq[i];
+    int i = 0, j = 0, k = 0;
+    
+    while (i < tamB && j < tamC)
+    {
+        if (vetB[i] <= vetC[j])
+        {
+            vetA[k] = vetB[i];
             i++;
-        } else {
-            arr[k] = arrDir[j];
+        } 
+        else
+        {
+            vetA[k] = vetC[j];
             j++;
         }
         k++;
     }
-
-    while (i < n1) {
-        arr[k] = arrEsq[i];
-        i++;
-        k++;
-    }
-
-    while (j < n2) {
-        arr[k] = arrDir[j];
-        j++;
-        k++;
-    }
-
-    free(arrEsq);
-    free(arrDir);
+    
+    if (i == tamB)
+        while (j < tamC || k < tamB + tamC - 1)
+        {
+            vetA[k] = vetC[j];
+            j++;
+            k++;
+        }
+    else
+        while (i < tamB || k < tamB + tamC - 1)
+        {
+            vetA[k] = vetB[i];
+            i++;
+            k++;
+        }
 }
 
-void merge_sort(int arr[], int esquerda, int direita)
+void mergeSort(int* vetA, int tamA)
 {
-    if (esquerda < direita) {
-        int meio = esquerda + (direita - esquerda) / 2;
+    int* vetB = (int*)malloc(tamA * sizeof(int));
+    int* vetC = (int*)malloc(tamA * sizeof(int));
+    int i = 0, j = 0, aux = 0;
+    int tamB = tamA/2, tamC = ceil(tamA/2.0);
 
-        merge_sort(arr, esquerda, meio);
-        merge_sort(arr, meio + 1, direita);
-        merge(arr, esquerda, meio, direita);
+    if (tamA > 1)
+    {
+        while (i < floor(tamA/2) || aux < floor(tamA/2))
+        {
+            vetB[i] = vetA[aux];
+            i++;
+            aux++;
+        }
+        aux = floor(tamA/2);
+        while (j < ceil(tamA/2.0) || aux < tamA)
+        {
+            vetC[j] = vetA[aux];
+            j++;
+            aux++;
+        }
+        
+        mergeSort(vetB, tamB);
+        mergeSort(vetC, tamC);
+        merge(vetA, vetB, vetC, tamB, tamC);
     }
+    
+    free(vetB);
+    free(vetC);
 }
 
 typedef struct Ponto
@@ -833,35 +844,20 @@ int main(void) {
     // ======= instancia do timer ========
     clock_t t1, t2;
     t1 = t2 = clock();
-    
-    int n;
-    scanf("%d", &n);
-    Ponto* pontos = (Ponto*) malloc(n * sizeof(Ponto));
-    Ponto ponto;
-    for (int i = 0; i < n; i++)
-        scanf("%f %f", &pontos[i].x, &pontos[i].y);
-    
-//    srand((uint)time(NULL));
-//    for (int i = 0; i < n;)
-//    {
-//        ponto.x = rand()%(long unsigned)200;
-//        ponto.y = rand()%(long unsigned)200;
-//        pontos[i++] = ponto;
-//    }
-      for(int i = 0; i < n; i++)
-        printf("%.2f %.2f\n", pontos[i].x, pontos[i].y);
-    
-    convexHull(n, pontos);
-    free(pontos);
-    
-//    int arr_size = (sizeof(amg) / sizeof(amg[0]))*(4);
+    int n = 9;
+    int* vet = vetorRandom(n, true);
+    imprimeVetor(n, vet);
+    printf("vet[0]: %d\n", vet[0]);
+    mergeSort(vet, n);
+    imprimeVetor(n, vet);
+    printf("vet[0]: %d\n", vet[0]);
     
     // ======== timer ========
     while(t1 == t2)
             t2 = clock();
 
     // exibicao do resultado do tempo gasto pelo codigo
-    printf("%.2f ms\n", (double)(t2 - t1) / CLOCKS_PER_SEC * 1000);
+    printf("%.4f ms\n", (double)(t2 - t1) / CLOCKS_PER_SEC * 1000);
 
     return 0;
 }
