@@ -645,32 +645,17 @@ void merge(int* vetA, int* vetB, int* vetC, int tamB, int tamC)
     while (i < tamB && j < tamC)
     {
         if (vetB[i] <= vetC[j])
-        {
-            vetA[k] = vetB[i];
-            i++;
-        } 
+            vetA[k] = vetB[i++];
         else
-        {
-            vetA[k] = vetC[j];
-            j++;
-        }
+            vetA[k] = vetC[j++];
         k++;
     }
     
-    if (i == tamB)
-        while (j < tamC || k < tamB + tamC - 1)
-        {
-            vetA[k] = vetC[j];
-            j++;
-            k++;
-        }
-    else
-        while (i < tamB || k < tamB + tamC - 1)
-        {
-            vetA[k] = vetB[i];
-            i++;
-            k++;
-        }
+    while (i < tamB)
+        vetA[k++] = vetB[i++];
+    
+    while (j < tamC)
+        vetA[k++] = vetC[j++];
 }
 
 void mergeSort(int* vetA, int tamA)
@@ -703,6 +688,23 @@ void mergeSort(int* vetA, int tamA)
     
     free(vetB);
     free(vetC);
+}
+
+void mergeSortSemRec(int* vetA, int tamA)
+{
+    int* tempArr = (int*)malloc(tamA * sizeof(int));
+    
+    for (int comprimento = 1; comprimento < tamA; comprimento = 2 * comprimento)
+        for (int i = 0; i < tamA; i = i + 2 * comprimento)
+        {
+            int esq = i;
+            int dir = (i + comprimento) < tamA ? (i + comprimento) : tamA;
+            int fim = (i + 2 * comprimento) < tamA ? (i + 2 * comprimento) : tamA;
+            merge(tempArr + esq, vetA + esq, vetA + dir, dir - esq, fim - dir);
+            for (int j  = esq; j < fim; j++)
+                vetA[j] = tempArr[j];
+        }
+    free(tempArr);
 }
 
 typedef struct Ponto
@@ -831,6 +833,7 @@ int convexHull(int n, Ponto* pontos)
     return tamanho;
 }
 
+
 int main(void) {
 //    LISTA l;
 //    int* vet = vetorRandom(8, false);
@@ -846,9 +849,10 @@ int main(void) {
     t1 = t2 = clock();
     int n = 9;
     int* vet = vetorRandom(n, true);
+    
     imprimeVetor(n, vet);
     printf("vet[0]: %d\n", vet[0]);
-    mergeSort(vet, n);
+    mergeSortSemRec(vet, n);
     imprimeVetor(n, vet);
     printf("vet[0]: %d\n", vet[0]);
     
