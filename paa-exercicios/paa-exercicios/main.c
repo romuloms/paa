@@ -402,7 +402,7 @@ int* selectionSort(int n, int* vetor)
     return vetor;
 }
 
-int* bubbleSort(int n, int* vetor)
+int* bubbleSort1(int n, int* vetor)
 {
     int aux;
     
@@ -565,61 +565,61 @@ int buscaBinaria(int tamanho, int* vetor, int chave)
     return -1;
 }
 
-void swap(int *a, int *b) {
-   int temp = *a;
-   *a = *b;
-   *b = temp;
-}
+//void swap(int *a, int *b) {
+//   int temp = *a;
+//   *a = *b;
+//   *b = temp;
+//}
+//
+//void reverter(int arr[], int inicio, int fim) {
+//   while (inicio < fim) {
+//       swap(&arr[inicio], &arr[fim]);
+//       inicio++;
+//       fim--;
+//   }
+//}
 
-void reverter(int arr[], int inicio, int fim) {
-   while (inicio < fim) {
-       swap(&arr[inicio], &arr[fim]);
-       inicio++;
-       fim--;
-   }
-}
-
-void lexicographicPermute(int n) {
-   int arr[n];
-   int i, j;
-
-   // Initialize the first permutation
-   for (i = 0; i < n; i++)
-       arr[i] = i + 1;
-
-   // Print the first permutation
-   for (i = 0; i < n; i++)
-       printf("%d ", arr[i]);
-   printf("\n");
-
-   // Generate subsequent permutations
-   while (1) 
-   {
-       // Find the largest index i such that arr[i] < arr[i+1]
-       i = n - 2;
-       while (i >= 0 && arr[i] >= arr[i + 1])
-           i--;
-
-       if (i < 0)  // No more permutations
-           break;
-
-       // Find the largest index j such that arr[i] < arr[j]
-       j = n - 1;
-       while (arr[i] >= arr[j])
-           j--;
-
-       // Swap arr[i] and arr[j]
-       swap(&arr[i], &arr[j]);
-
-       // Reverse the elements from arr[i+1] to arr[n-1]
-       reverter(arr, i + 1, n - 1);
-
-       // Print the new permutation
-       for (i = 0; i < n; i++)
-           printf("%d ", arr[i]);
-       printf("\n");
-   }
-}
+//void lexicographicPermute(int n) {
+//   int arr[n];
+//   int i, j;
+//
+//   // Initialize the first permutation
+//   for (i = 0; i < n; i++)
+//       arr[i] = i + 1;
+//
+//   // Print the first permutation
+//   for (i = 0; i < n; i++)
+//       printf("%d ", arr[i]);
+//   printf("\n");
+//
+//   // Generate subsequent permutations
+//   while (1) 
+//   {
+//       // Find the largest index i such that arr[i] < arr[i+1]
+//       i = n - 2;
+//       while (i >= 0 && arr[i] >= arr[i + 1])
+//           i--;
+//
+//       if (i < 0)  // No more permutations
+//           break;
+//
+//       // Find the largest index j such that arr[i] < arr[j]
+//       j = n - 1;
+//       while (arr[i] >= arr[j])
+//           j--;
+//
+//       // Swap arr[i] and arr[j]
+//       swap(&arr[i], &arr[j]);
+//
+//       // Reverse the elements from arr[i+1] to arr[n-1]
+//       reverter(arr, i + 1, n - 1);
+//
+//       // Print the new permutation
+//       for (i = 0; i < n; i++)
+//           printf("%d ", arr[i]);
+//       printf("\n");
+//   }
+//}
 
 
 int bitcoin(int* arr, int tamanho)
@@ -638,7 +638,7 @@ int bitcoin(int* arr, int tamanho)
 }
 
 
-void merge(int* vetA, int* vetB, int* vetC, int tamB, int tamC)
+void merge1(int* vetA, int* vetB, int* vetC, int tamB, int tamC)
 {
     int i = 0, j = 0, k = 0;
     
@@ -658,7 +658,7 @@ void merge(int* vetA, int* vetB, int* vetC, int tamB, int tamC)
         vetA[k++] = vetC[j++];
 }
 
-void mergeSort(int* vetA, int tamA)
+void mergeSort1(int* vetA, int tamA)
 {
     int* vetB = (int*)malloc(tamA * sizeof(int));
     int* vetC = (int*)malloc(tamA * sizeof(int));
@@ -681,9 +681,9 @@ void mergeSort(int* vetA, int tamA)
             aux++;
         }
         
-        mergeSort(vetB, tamB);
-        mergeSort(vetC, tamC);
-        merge(vetA, vetB, vetC, tamB, tamC);
+        mergeSort1(vetB, tamB);
+        mergeSort1(vetC, tamC);
+        merge1(vetA, vetB, vetC, tamB, tamC);
     }
     
     free(vetB);
@@ -700,12 +700,15 @@ void mergeSortSemRec(int* vetA, int tamA)
             int esq = i;
             int dir = (i + comprimento) < tamA ? (i + comprimento) : tamA;
             int fim = (i + 2 * comprimento) < tamA ? (i + 2 * comprimento) : tamA;
-            merge(tempArr + esq, vetA + esq, vetA + dir, dir - esq, fim - dir);
+            merge1(tempArr + esq, vetA + esq, vetA + dir, dir - esq, fim - dir);
             for (int j  = esq; j < fim; j++)
                 vetA[j] = tempArr[j];
         }
     free(tempArr);
 }
+
+int min(int x, int y) {return (x < y)? x : y;}
+
 
 typedef struct Ponto
 {
@@ -833,35 +836,286 @@ int convexHull(int n, Ponto* pontos)
     return tamanho;
 }
 
+//int compare(const void *a, const void *b) {
+//    return strcmp((char *)a, (char *)b);
+//}
+
+void swap(char *a, char *b) {
+    char temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+// Função de particionamento para o Quicksort
+int partition(char *arr, int low, int high, int (*compar)(const void *, const void *)) {
+    char pivot = arr[high];
+    int i = low - 1;
+
+    for (int j = low; j <= high - 1; j++) {
+        if (compar(&arr[j], &pivot) <= 0) {
+            i++;
+            swap(&arr[i], &arr[j]);
+        }
+    }
+
+    swap(&arr[i + 1], &arr[high]);
+    return i + 1;
+}
+
+// Função Quicksort
+void quicksort(char *arr, int low, int high, int (*compar)(const void *, const void *)) {
+    if (low < high) {
+        int pi = partition(arr, low, high, compar);
+
+        quicksort(arr, low, pi - 1, compar);
+        quicksort(arr, pi + 1, high, compar);
+    }
+}
+
+struct Aluno {
+    char primeiroNome[16];
+    char ultimoSobrenome[16];
+    int idade;
+    char sexo;
+    char matricula[10];
+};
+
+void countSortGenero(struct Aluno* alunos, int n) 
+{
+    int sexos[2];
+    
+    sexos[0] = 0;
+    sexos[1] = 0;
+    struct Aluno* saida = (struct Aluno*)malloc(n * sizeof(struct Aluno));
+    
+    for (int i = 0; i < n; i++)
+    {
+        int indSexo = (alunos[i].sexo == 'M') ? 1 : 0;
+        sexos[indSexo]++;
+    }
+    
+    for (int i = 1; i < 2; i++)
+        sexos[i] += sexos[i - 1];
+    
+    for (int i = n - 1; i >= 0; i--)
+    {
+        int indSexo = (alunos[i].sexo == 'M') ? 1 : 0;
+        saida[sexos[indSexo] - 1] = alunos[i];
+        sexos[indSexo]--;
+    }
+    
+    for (int i = 0; i < n; i++)
+        alunos[i] = saida[i];
+    
+    free(saida);
+}
+
+void countSort(struct Aluno* alunos, int n) 
+{
+    int count[121] = {0};
+
+    for (int i = 0; i < n; i++)
+        count[alunos[i].idade]++;
+
+    for (int i = 1; i <= 120; i++)
+        count[i] += count[i - 1];
+
+    struct Aluno* output = (struct Aluno*)malloc(n * sizeof(struct Aluno));
+
+    for (int i = n - 1; i >= 0; i--) 
+    {
+        output[count[alunos[i].idade] - 1] = alunos[i];
+        count[alunos[i].idade]--;
+    }
+
+    for (int i = 0; i < n; i++)
+        alunos[i] = output[i];
+
+    free(output);
+}
+
+
+#define MAX_STRINGS 100000
+#define MAX_LENGTH 21
+
+typedef struct {
+    char original[MAX_LENGTH];
+    char sorted[MAX_LENGTH];
+} StringPair;
+
+void merge(char *arr, int l, int m, int r) {
+    int i, j, k, n1 = m - l + 1, n2 = r - m;
+    char L[n1], R[n2];
+
+    for (i = 0; i < n1; i++)
+        L[i] = arr[l + i];
+    for (j = 0; j < n2; j++)
+        R[j] = arr[m + 1 + j];
+
+    i = j = 0; k = l;
+    while (i < n1 && j < n2) {
+        if (L[i] <= R[j]) {
+            arr[k] = L[i++];
+        } else {
+            arr[k] = R[j++];
+        }
+        k++;
+    }
+
+    while (i < n1) {
+        arr[k++] = L[i++];
+    }
+    while (j < n2) {
+        arr[k++] = R[j++];
+    }
+}
+
+void mergeSort(char *arr, int l, int r) {
+    if (l < r) {
+        int m = l + (r - l) / 2;
+        mergeSort(arr, l, m);
+        mergeSort(arr, m + 1, r);
+        merge(arr, l, m, r);
+    }
+}
+
+void mergePairs(StringPair *arr, int l, int m, int r) {
+    int i, j, k, n1 = m - l + 1, n2 = r - m;
+    StringPair L[n1], R[n2];
+
+    for (i = 0; i < n1; i++)
+        L[i] = arr[l + i];
+    for (j = 0; j < n2; j++)
+        R[j] = arr[m + 1 + j];
+
+    i = j = 0; k = l;
+    while (i < n1 && j < n2) {
+        if (strcmp(L[i].sorted, R[j].sorted) <= 0) {
+            arr[k] = L[i++];
+
+        } else {
+            arr[k] = R[j++];
+        }
+        k++;
+    }
+
+    while (i < n1) {
+        arr[k++] = L[i++];
+    }
+    while (j < n2) {
+        arr[k++] = R[j++];
+    }
+}
+
+void mergeSortPairs(StringPair *arr, int l, int r) {
+    if (l < r) {
+        int m = l + (r - l) / 2;
+        mergeSortPairs(arr, l, m);
+        mergeSortPairs(arr, m + 1, r);
+        mergePairs(arr, l, m, r);
+    }
+}
+
+void mergePairsOri(StringPair *arr, int l, int m, int r) {
+    int i, j, k, n1 = m - l + 1, n2 = r - m;
+    StringPair L[n1], R[n2];
+
+    for (i = 0; i < n1; i++)
+        L[i] = arr[l + i];
+    for (j = 0; j < n2; j++)
+        R[j] = arr[m + 1 + j];
+
+    i = j = 0; k = l;
+    while (i < n1 && j < n2) {
+        // Aqui modificamos a comparação para se basear em `original` ao invés de `sorted`
+        if (strcmp(L[i].original, R[j].original) <= 0) {
+            arr[k] = L[i++];
+        } else {
+            arr[k] = R[j++];
+        }
+        k++;
+    }
+
+    while (i < n1) {
+        arr[k++] = L[i++];
+    }
+    while (j < n2) {
+        arr[k++] = R[j++];
+    }
+}
+
+void mergeSortPairsOri(StringPair *arr, int l, int r) {
+    if (l < r) {
+        int m = l + (r - l) / 2;
+        mergeSortPairsOri(arr, l, m);
+        mergeSortPairsOri(arr, m + 1, r);
+        mergePairsOri(arr, l, m, r);
+    }
+}
 
 int main(void) {
-//    LISTA l;
-//    int* vet = vetorRandom(8, false);
-//    imprimeVetor(8, vet);
-//    int num = buscaSequencial(78, 8, vet);
-//    printf("%d\n", num);
-//    liberaVetor(8, vet);
-//    int tam = sizeof(amigos) / sizeof(amigos[0]);
-    
-    
-    // ======= instancia do timer ========
-    clock_t t1, t2;
-    t1 = t2 = clock();
-    int n = 9;
-    int* vet = vetorRandom(n, true);
-    
-    imprimeVetor(n, vet);
-    printf("vet[0]: %d\n", vet[0]);
-    mergeSortSemRec(vet, n);
-    imprimeVetor(n, vet);
-    printf("vet[0]: %d\n", vet[0]);
-    
-    // ======== timer ========
-    while(t1 == t2)
-            t2 = clock();
+    int n;
+    scanf("%d", &n);
 
-    // exibicao do resultado do tempo gasto pelo codigo
-    printf("%.4f ms\n", (double)(t2 - t1) / CLOCKS_PER_SEC * 1000);
+    StringPair pairs[MAX_STRINGS];
+
+    for (int i = 0; i < n; i++)
+        scanf("%s", pairs[i].original);
+    
+    mergeSortPairsOri(pairs, 0, n - 1);
+    
+    for (int i = 0; i < n; i++) {
+        strcpy(pairs[i].sorted, pairs[i].original);
+        mergeSort(pairs[i].sorted, 0, (int)strlen(pairs[i].sorted) - 1);
+    }
+    
+    int visited[n];
+    memset(visited, 0, sizeof(visited));
+    
+    for (int i = 0; i < n; ) {
+        if (visited[i])
+            i++;
+        
+        else
+        {
+            printf("%s", pairs[i].original);
+            visited[i] = 1;
+            int end = i;
+            while (end < n) {
+                if (strcmp(pairs[i].sorted, pairs[end + 1].sorted) == 0)
+                {
+                    visited[end+1] = 1;
+                    printf(" %s", pairs[end+1].original);
+                }
+                end++;
+            }
+            printf("\n");
+            i++;
+        }
+    }
 
     return 0;
 }
+
+//int main(void) {
+//    // ======= instancia do timer ========
+//    clock_t t1, t2;
+//    t1 = t2 = clock();
+//    int n = 9;
+//    int* vet = vetorRandom(n, true);
+//    
+//    imprimeVetor(n, vet);
+//    printf("vet[0]: %d\n", vet[0]);
+//    mergeSortSemRec(vet, n);
+//    imprimeVetor(n, vet);
+//    printf("vet[0]: %d\n", vet[0]);
+//    
+//    // ======== timer ========
+//    while(t1 == t2)
+//            t2 = clock();
+//
+//    // exibicao do resultado do tempo gasto pelo codigo
+//    printf("%.4f ms\n", (double)(t2 - t1) / CLOCKS_PER_SEC * 1000);
+//
+//    return 0;
+//}
