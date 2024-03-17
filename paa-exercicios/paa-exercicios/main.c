@@ -1053,69 +1053,33 @@ void mergeSortPairsOri(StringPair *arr, int l, int r) {
     }
 }
 
+int coinRow(int* vetor, int n)
+{
+    int* vetF = (int*)malloc(n * sizeof(int));
+    vetF[0] = 0;
+    vetF[1] = vetor[0];
+    
+    for (int i = 2; i < n; i++)
+        vetF[i] = MAX(vetor[i] + vetF[i-2], vetF[i-1]);
+    
+    return vetF[n-1];
+}
+
 int main(void) {
-    int n;
-    scanf("%d", &n);
+    // ======= instancia do timer ========
+    clock_t t1, t2;
+    t1 = t2 = clock();
+    int n = 6;
+    int* vet = leVetor(n);
+    int moeda = coinRow(vet, n);
 
-    StringPair pairs[MAX_STRINGS];
+    printf("dinheiro: %d\n", moeda);
+    // ======== timer ========
+    while(t1 == t2)
+            t2 = clock();
 
-    for (int i = 0; i < n; i++)
-        scanf("%s", pairs[i].original);
-    
-    mergeSortPairsOri(pairs, 0, n - 1);
-    
-    for (int i = 0; i < n; i++) {
-        strcpy(pairs[i].sorted, pairs[i].original);
-        mergeSort(pairs[i].sorted, 0, (int)strlen(pairs[i].sorted) - 1);
-    }
-    
-    int visited[n];
-    memset(visited, 0, sizeof(visited));
-    
-    for (int i = 0; i < n; ) {
-        if (visited[i])
-            i++;
-        
-        else
-        {
-            printf("%s", pairs[i].original);
-            visited[i] = 1;
-            int end = i;
-            while (end < n) {
-                if (strcmp(pairs[i].sorted, pairs[end + 1].sorted) == 0)
-                {
-                    visited[end+1] = 1;
-                    printf(" %s", pairs[end+1].original);
-                }
-                end++;
-            }
-            printf("\n");
-            i++;
-        }
-    }
+    // exibicao do resultado do tempo gasto pelo codigo
+    printf("%.4f ms\n", (double)(t2 - t1) / CLOCKS_PER_SEC * 1000);
 
     return 0;
 }
-
-//int main(void) {
-//    // ======= instancia do timer ========
-//    clock_t t1, t2;
-//    t1 = t2 = clock();
-//    int n = 9;
-//    int* vet = vetorRandom(n, true);
-//    
-//    imprimeVetor(n, vet);
-//    printf("vet[0]: %d\n", vet[0]);
-//    mergeSortSemRec(vet, n);
-//    imprimeVetor(n, vet);
-//    printf("vet[0]: %d\n", vet[0]);
-//    
-//    // ======== timer ========
-//    while(t1 == t2)
-//            t2 = clock();
-//
-//    // exibicao do resultado do tempo gasto pelo codigo
-//    printf("%.4f ms\n", (double)(t2 - t1) / CLOCKS_PER_SEC * 1000);
-//
-//    return 0;
-//}
