@@ -1065,13 +1065,34 @@ int coinRow(int* vetor, int n)
     return vetF[n-1];
 }
 
+int changeMaking(int* tiposDeMoedas, int numeroDeMoedas, int valorTotal)
+{
+    int* respostas = (int*)calloc(numeroDeMoedas*5, sizeof(int));
+    respostas[0] = 0;
+    
+    for (int i = 1; i <= valorTotal; i++)
+    {
+        int temp = 10e6;
+        int j = 1;
+        while ((j <= numeroDeMoedas) && (i >= tiposDeMoedas[j]))
+        {
+            temp = min(respostas[i - tiposDeMoedas[j]], temp);
+            j++;
+        }
+        respostas[i] = temp + 1;
+    }
+    
+    return respostas[valorTotal];
+}
+
 int main(void) {
     // ======= instancia do timer ========
     clock_t t1, t2;
     t1 = t2 = clock();
-    int n = 6;
-    int* vet = leVetor(n);
-    int moeda = coinRow(vet, n);
+    int valorTotal = 27;
+    int tiposMoedas[] = {1, 3, 4};
+    int numeroDeMoedas = 3;
+    int moeda = changeMaking(tiposMoedas, numeroDeMoedas, valorTotal);
 
     printf("dinheiro: %d\n", moeda);
     // ======== timer ========
