@@ -1074,7 +1074,7 @@ int changeMaking(int* tiposDeMoedas, int numeroDeMoedas, int valorTotal)
     {
         int temp = 10e6;
         int j = 0;
-        while ((j <= numeroDeMoedas) && (i >= tiposDeMoedas[j]))
+        while ((j < numeroDeMoedas) && (i >= tiposDeMoedas[j]))
         {
             temp = min(respostas[i - tiposDeMoedas[j]], temp);
             j++;
@@ -1089,7 +1089,7 @@ int main(void) {
     // ======= instancia do timer ========
     clock_t t1, t2;
     t1 = t2 = clock();
-    int valorTotal = 2;
+    int valorTotal = 27;
     int tiposMoedas[] = {1, 3, 4};
     int numeroDeMoedas = 3;
     int moeda = changeMaking(tiposMoedas, numeroDeMoedas, valorTotal);
