@@ -1085,16 +1085,37 @@ int changeMaking(int* tiposDeMoedas, int numeroDeMoedas, int valorTotal)
     return respostas[valorTotal];
 }
 
+// esculturas de grelo
+int esculturas(int quantidadeBlocos, int tamanhoTotal, int* tiposTamanhos)
+{
+    int* respostas = (int*)calloc(tamanhoTotal*5, sizeof(int));
+    respostas[0] = 0;
+    
+    for (int i = 1; i <= tamanhoTotal; i++)
+    {
+        int aux = 10e6;
+        int j = 0;
+        while ((j < quantidadeBlocos) && (i >= tiposTamanhos[j]))
+        {
+            aux = min(respostas[i - tiposTamanhos[j]], aux);
+            j++;
+        }
+        respostas[i] = aux + 1;
+    }
+    
+    return respostas[tamanhoTotal];
+}
+
 int main(void) {
     // ======= instancia do timer ========
     clock_t t1, t2;
     t1 = t2 = clock();
-    int valorTotal = 27;
-    int tiposMoedas[] = {1, 3, 4};
-    int numeroDeMoedas = 3;
-    int moeda = changeMaking(tiposMoedas, numeroDeMoedas, valorTotal);
+    int tamanhoTot = 103;
+    int tiposTam[] = {1, 5};
+    int quantBlocos = 2;
+    int nBlocos = esculturas(quantBlocos, tamanhoTot, tiposTam);
 
-    printf("dinheiro: %d\n", moeda);
+    printf("blocos: %d\n", nBlocos);
     // ======== timer ========
     while(t1 == t2)
             t2 = clock();
