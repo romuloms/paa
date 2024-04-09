@@ -1106,181 +1106,6 @@ int esculturas(int quantidadeBlocos, int tamanhoTotal, int* tiposTamanhos)
     return respostas[tamanhoTotal];
 }
 
-typedef struct nos
-{
-  int item;
-  struct nos *anterior;
-  struct nos *proximo;
-} NO;
-
-typedef struct
-{
-  NO* cabeca;
-  NO* cauda;
-  int tamanho;
-} LISTA_DUP_ENCADEADA;
-
-char compara(int x, int y)
-{
-  return x > y ? 1 : (x < y ? -1 : 0);
-}
-
-bool igual(int x, int y)
-{
-  return compara(x,y) == 0;
-}
-
-void inicializar(LISTA_DUP_ENCADEADA *l)
-{
-  l->cabeca = NULL;
-  l->cauda = NULL;
-  l->tamanho = 0;
-}
-
-NO* criarNo(int item, NO* anterior, NO* proximo)
-{
-  NO* novo = (NO*)malloc(sizeof(NO));
-
-  novo->item = item;
-  novo->anterior = anterior;
-  novo->proximo = proximo;
-
-  return novo;
-}
-
-void inserir(int item, LISTA_DUP_ENCADEADA *l)
-{
-  NO* novo = criarNo(item, NULL, l->cabeca);
-  l->tamanho++;
-
-  if (l->cabeca)
-    l->cabeca->anterior = novo;
-
-  l->cabeca = novo;
-
-  if (l->cauda != NULL)
-    l->cauda = novo;
-}
-
-void inserirNoFim(int item, LISTA_DUP_ENCADEADA *l)
-{
-  NO* novo = criarNo(item, l->cauda, NULL);
-  l->tamanho++;
-
-  if (l->cauda)
-    l->cauda->proximo = novo;
-  l->cauda = novo;
-
-  if (l->cabeca == NULL)
-    l->cabeca = novo;
-}
-
-bool insercaoOrdenada(int item, LISTA_DUP_ENCADEADA *l)
-{
-  NO* p = l->cabeca;
-  NO* aux = NULL;
-  NO* novo = criarNo(item, NULL, NULL);
-
-  if (l->cabeca == NULL)
-  {
-    l->cabeca = novo;
-    l->cauda = l->cabeca;
-    l->tamanho++;
-
-    return true;
-  }
-  else
-  {
-    while (p != NULL)
-    {
-      if (item < p->item)
-      {
-        if (aux == NULL)
-        {
-          novo->proximo = p;
-          p->anterior = novo;
-          l->cabeca = novo;
-        } else
-        {
-          novo->proximo = p;
-          p->anterior = novo;
-          aux->proximo = novo;
-        }
-        l->tamanho++;
-        return true;
-      }
-      else if (p->proximo == NULL)
-      {
-        novo->anterior = p;
-        p->proximo = novo;
-        l->cauda = novo;
-        l->tamanho++;
-        return true;
-      }
-      aux = p;
-      p = p->proximo;
-    }
-  }
-
-    return false;
-}
-
-void removerCabeca(LISTA_DUP_ENCADEADA *l)
-{
-  if (l->cabeca)
-  {
-    NO* aux = l->cabeca;
-    l->cabeca = l->cabeca->proximo;
-    l->tamanho--;
-    free(aux);
-  }
-
-  if (l->cabeca == NULL)
-    l->cauda = NULL;
-}
-
-void removerCauda(LISTA_DUP_ENCADEADA *l)
-{
-  if (l->cauda)
-  {
-    NO* aux = l->cauda;
-    l->cauda = l->cauda->anterior;
-    l->tamanho--;
-    free(aux);
-  }
-
-  if (l->cauda == NULL)
-    l->cabeca = NULL;
-}
-
-void limpar(LISTA_DUP_ENCADEADA *l)
-{
-  NO* atual = l->cabeca;
-  while (atual)
-  {
-    NO* prox = atual->proximo;
-    atual = prox;
-    free(atual);
-  }
-  l->cabeca = NULL;
-  l->tamanho = 0;
-}
-
-void imprimirLista(LISTA_DUP_ENCADEADA *l)
-{
-  printf("[");
-  NO* p = l->cabeca;
-
-  while (p)
-  {
-    printf("%d", p->item);
-    if (p->proximo)
-      printf(" ");
-    p = p->proximo;
-  }
-  printf("]\n");
-}
-
 int maximoArr(int* vetor)
 {
   int max = vetor[0];
@@ -1294,74 +1119,110 @@ int maximoArr(int* vetor)
   return max;
 }
 
-int main(void)
+#define MAX_MAESTRIA 500000  // Definindo a maestria máxima para o Counting Sort
+#define MAX_JOGADORES 5  // Supondo um tamanho fixo para o array de jogadores para simplificar
+
+// Definição do struct Aluno
+struct Jogador {
+  char nomeJogador[16];
+  int maestria;
+  char campeao[16];
+};
+
+// Função para ordenar os jogadores por maestria usando Counting Sort
+void ordenarPorMaestria(struct Jogador jogadores[], int n) {
+    struct Jogador saida[n];  // Array de saída que terá os jogadores ordenados
+    int contagem[MAX_MAESTRIA + 1], i;
+
+    memset(contagem, 0, sizeof(contagem));  // Inicializa o array de contagem com 0
+
+    // Armazena a contagem de ocorrências de cada maestria
+    for(i = 0; i < n; ++i)
+        contagem[jogadores[i].maestria]++;
+
+    // Altera contagem[i] para que contagem[i] agora contenha a posição real desta maestria na array de saída
+    for(i = 1; i <= MAX_MAESTRIA; ++i)
+        contagem[i] += contagem[i - 1];
+
+    // Constrói o array de saída
+    for(i = n - 1; i >= 0; --i) {
+        saida[contagem[jogadores[i].maestria] - 1] = jogadores[i];
+        contagem[jogadores[i].maestria]--;
+    }
+    int j = n - 1;
+    // Copia o array de saída para jogadores[], para que agora contenha os jogadores ordenados por maestria
+    for(i = 0; i < n; ++i) 
+    {
+        jogadores[j] = saida[i];
+        j--;
+    }
+}
+
+// Função para imprimir os jogadores
+void imprimirJogador(struct Jogador jogadores[], int n) {
+  for(int i = 0; i < n; i++)
+    printf("Nome: %s, maestria: %d, campeao[16]: %s\n", jogadores[i].nomeJogador, jogadores[i].maestria, jogadores[i].campeao);
+}
+
+void getCampeoes(struct Jogador jogadores[], char* campeoes[MAX_JOGADORES])
 {
-  LISTA_DUP_ENCADEADA entrada, auxiliar;
-  inicializar(&entrada);
-  inicializar(&auxiliar);
+    for (int i = 0; i < MAX_JOGADORES; i++)
+    {
+        campeoes[i] = malloc(strlen(jogadores[i].campeao + 1));
+        if (campeoes[i] != NULL)
+            strcpy(campeoes[i], jogadores[i].campeao);
+    }
+}
 
-  int numeroTestes;
-  scanf("%d", &numeroTestes);
+void liberaStr(char* campeoes[MAX_JOGADORES])
+{
+    for (int i = 0; i < MAX_JOGADORES; i++)
+        if (campeoes[i] != NULL)
+            free(campeoes[i]);
+}
 
-  for (int i = 0; i < numeroTestes; i++)
-  {
-    int numItens, soma;
-    scanf("%d", &numItens);
+void ordenaCampeao(struct Jogador jogadores[], char* campeoes[MAX_JOGADORES])
+{
+    int contagem[28] = {0};
+    char* copia[MAX_JOGADORES];
     
-    for (int j = 0; j < numItens; j++)
+    for (int i = 0; i < MAX_JOGADORES; i++)
+        contagem[jogadores[i].campeao[0] - 'A']++;
+    
+    for (int i = 1; i < 28; i++)
+        contagem[i] += contagem[i - 1];
+    
+    for (int i = MAX_JOGADORES-1; i >= 0; i--)
     {
-      int item;
-      scanf("%d", &item);
-      insercaoOrdenada(item, &entrada);
+        copia[contagem[jogadores[i].campeao[0] - 'A'] - 1] = campeoes[i];
+        contagem[jogadores[i].campeao[0] - 'A']--;
     }
+    
+    for (int i = 0; i < MAX_JOGADORES; i++)
+        campeoes[i] = copia[i];
+}
 
-    inserir(entrada.cabeca->item, &auxiliar);
-    inserirNoFim(entrada.cauda->item, &auxiliar);
-
-    soma = abs(auxiliar.cauda->item - auxiliar.cabeca->item);
-
-    removerCauda(&entrada);
-    removerCabeca(&entrada);
-
-    while (entrada.tamanho >= 0)
-    {
-      int arr[4];
-
-      arr[0] = abs(auxiliar.cabeca->item - entrada.cabeca->item);
-      arr[1] = abs(auxiliar.cauda->item - entrada.cabeca->item);
-      arr[2] = abs(auxiliar.cabeca->item - entrada.cauda->item);
-      arr[3] = abs(auxiliar.cauda->item - entrada.cauda->item);
-
-      int maximo = maximoArr(arr);
-      
-      if (maximo == arr[0])
-      {
-        inserir(entrada.cabeca->item, &auxiliar);
-        removerCabeca(&entrada);
-      }
-      if (maximo == arr[1])
-      {
-        inserirNoFim(entrada.cabeca->item, &auxiliar);
-        removerCabeca(&entrada);
-      }
-      if (maximo == arr[2])
-      {
-        inserir(entrada.cauda->item, &auxiliar);
-        removerCauda(&entrada);
-      }
-      else
-      {
-        inserirNoFim(entrada.cauda->item, &auxiliar);
-        removerCauda(&entrada);
-      }
-
-      soma += maximo;
-    }
-
-    printf("Case %d: %d\n", i+1, soma);
-  }
-
-  limpar(&entrada);
-
-  return 0;
+int main(void) {
+    struct Jogador jogadores[MAX_JOGADORES] = {
+        {"Romulo", 99000, "Kayn"},
+        {"Heitor", 370000, "Yasuo2"},
+        {"Itor", 379999, "Yasuo1"},
+        {"Lanna", 400000, "Lulu1"},
+        {"Lavinia", 250000, "Lulu2"},
+    };
+    int n = MAX_JOGADORES;
+    char* copia[MAX_JOGADORES];
+    printf("---------------\n");
+    ordenarPorMaestria(jogadores, n);
+    getCampeoes(jogadores, copia);
+    imprimirJogador(jogadores, n);
+    for (int i = 0; i < n; i++)
+        printf("%s\n", copia[i]);
+    printf("---------------\n");
+    ordenaCampeao(jogadores, copia);
+    for (int i = 0; i < n; i++)
+        printf("%s\n", copia[i]);
+    liberaStr(copia);
+    
+    return 0;
 }

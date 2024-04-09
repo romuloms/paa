@@ -1,0 +1,10 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     "/Users/romul/Docs/ufs/Quarto Período/paa/atividades-paa/output/counttest"
+relocations:
+  - { offsetInCU: 0x26, offset: 0x26, size: 0x8, addend: 0x0, symName: _ordenarPorIdade, symObjAddr: 0x0, symBinAddr: 0x100002F30, symSize: 0x28C }
+  - { offsetInCU: 0x86, offset: 0x86, size: 0x8, addend: 0x0, symName: _ordenarPorIdade, symObjAddr: 0x0, symBinAddr: 0x100002F30, symSize: 0x28C }
+  - { offsetInCU: 0xF0, offset: 0xF0, size: 0x8, addend: 0x0, symName: _ordenaPorGenero, symObjAddr: 0x28C, symBinAddr: 0x1000031BC, symSize: 0x274 }
+  - { offsetInCU: 0x1E6, offset: 0x1E6, size: 0x8, addend: 0x0, symName: _imprimirAlunos, symObjAddr: 0x500, symBinAddr: 0x100003430, symSize: 0xB4 }
+  - { offsetInCU: 0x234, offset: 0x234, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x5B4, symBinAddr: 0x1000034E4, symSize: 0xDC }
+...
