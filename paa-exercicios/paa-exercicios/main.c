@@ -1129,28 +1129,24 @@ struct Jogador {
   char campeao[16];
 };
 
-// Função para ordenar os jogadores por maestria usando Counting Sort
+// Função para ordenar os campeões por maestria usando CountingSort
 void ordenarPorMaestria(struct Jogador jogadores[], int n) {
-    struct Jogador saida[n];  // Array de saída que terá os jogadores ordenados
-    int contagem[MAX_MAESTRIA + 1], i;
+    struct Jogador saida[n];
+    int contagem[MAX_MAESTRIA + 1] = {0};
+    int i;
 
-    memset(contagem, 0, sizeof(contagem));  // Inicializa o array de contagem com 0
-
-    // Armazena a contagem de ocorrências de cada maestria
     for(i = 0; i < n; ++i)
         contagem[jogadores[i].maestria]++;
 
-    // Altera contagem[i] para que contagem[i] agora contenha a posição real desta maestria na array de saída
     for(i = 1; i <= MAX_MAESTRIA; ++i)
         contagem[i] += contagem[i - 1];
 
-    // Constrói o array de saída
     for(i = n - 1; i >= 0; --i) {
         saida[contagem[jogadores[i].maestria] - 1] = jogadores[i];
         contagem[jogadores[i].maestria]--;
     }
+    
     int j = n - 1;
-    // Copia o array de saída para jogadores[], para que agora contenha os jogadores ordenados por maestria
     for(i = 0; i < n; ++i) 
     {
         jogadores[j] = saida[i];
@@ -1158,7 +1154,32 @@ void ordenarPorMaestria(struct Jogador jogadores[], int n) {
     }
 }
 
-// Função para imprimir os jogadores
+void ordenaCampeao(struct Jogador jogadores[], char* campeoes[MAX_JOGADORES])
+{
+    int contagem[28] = {0};
+    struct Jogador saida[MAX_JOGADORES];
+    char* copia[MAX_JOGADORES];
+    
+    for (int i = 0; i < MAX_JOGADORES; i++)
+        contagem[jogadores[i].campeao[0] - 'A']++;
+    
+    for (int i = 1; i < 28; i++)
+        contagem[i] += contagem[i - 1];
+    
+    for (int i = MAX_JOGADORES-1; i >= 0; i--)
+    {
+        copia[contagem[jogadores[i].campeao[0] - 'A'] - 1] = campeoes[i];
+        saida[contagem[jogadores[i].campeao[0] - 'A'] - 1] = jogadores[i];
+        contagem[jogadores[i].campeao[0] - 'A']--;
+    }
+    
+    for (int i = 0; i < MAX_JOGADORES; i++)
+    {
+        campeoes[i] = copia[i];
+        jogadores[i] = saida[i];
+    }
+}
+
 void imprimirJogador(struct Jogador jogadores[], int n) {
   for(int i = 0; i < n; i++)
     printf("Nome: %s, maestria: %d, campeao[16]: %s\n", jogadores[i].nomeJogador, jogadores[i].maestria, jogadores[i].campeao);
@@ -1181,34 +1202,33 @@ void liberaStr(char* campeoes[MAX_JOGADORES])
             free(campeoes[i]);
 }
 
-void ordenaCampeao(struct Jogador jogadores[], char* campeoes[MAX_JOGADORES])
+void resposta(struct Jogador jogadores[], char* campeoes[MAX_JOGADORES])
 {
-    int contagem[28] = {0};
-    char* copia[MAX_JOGADORES];
-    
-    for (int i = 0; i < MAX_JOGADORES; i++)
-        contagem[jogadores[i].campeao[0] - 'A']++;
-    
-    for (int i = 1; i < 28; i++)
-        contagem[i] += contagem[i - 1];
-    
-    for (int i = MAX_JOGADORES-1; i >= 0; i--)
+    int contador = 0;
+    for (int i = 0; i < MAX_JOGADORES - 1; i++)
     {
-        copia[contagem[jogadores[i].campeao[0] - 'A'] - 1] = campeoes[i];
-        contagem[jogadores[i].campeao[0] - 'A']--;
+        if ((strcmp(campeoes[i], campeoes[i+1]) == 0) && (contador == 0))
+        {
+            printf("%s jogará com %s\n", jogadores[i].nomeJogador, campeoes[i]);
+            contador++;
+        } else if ((strcmp(campeoes[i], campeoes[i+1]) == 0) && (contador != 0))
+            contador++;
+        else if ((strcmp(campeoes[i], campeoes[i+1]) != 0) && (contador == 0))
+            printf("%s jogará com %s\n", jogadores[i].nomeJogador, campeoes[i]);
+        else
+            contador = 0;
     }
-    
-    for (int i = 0; i < MAX_JOGADORES; i++)
-        campeoes[i] = copia[i];
+    if (strcmp(campeoes[MAX_JOGADORES - 2], campeoes[MAX_JOGADORES - 1]) != 0)
+        printf("%s jogará com %s\n", jogadores[MAX_JOGADORES - 1].nomeJogador, campeoes[MAX_JOGADORES - 1]);
 }
 
 int main(void) {
     struct Jogador jogadores[MAX_JOGADORES] = {
-        {"Romulo", 99000, "Kayn"},
-        {"Heitor", 370000, "Yasuo2"},
-        {"Itor", 379999, "Yasuo1"},
-        {"Lanna", 400000, "Lulu1"},
-        {"Lavinia", 250000, "Lulu2"},
+        {"Romulo", 99000, "Alistar"},
+        {"Heitor", 370000, "Brand"},
+        {"Itor", 379999, "Cassiopeia"},
+        {"Lanna", 400000, "Diana"},
+        {"Lavinia", 250000, "Ezreal"},
     };
     int n = MAX_JOGADORES;
     char* copia[MAX_JOGADORES];
@@ -1220,8 +1240,9 @@ int main(void) {
         printf("%s\n", copia[i]);
     printf("---------------\n");
     ordenaCampeao(jogadores, copia);
-    for (int i = 0; i < n; i++)
-        printf("%s\n", copia[i]);
+//    for (int i = 0; i < n; i++)
+//        printf("%s de %s\n", jogadores[i].nomeJogador, copia[i]);
+    resposta(jogadores, copia);
     liberaStr(copia);
     
     return 0;
