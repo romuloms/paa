@@ -1119,7 +1119,7 @@ int maximoArr(int* vetor)
   return max;
 }
 
-#define MAX_MAESTRIA 500000  // Definindo a maestria máxima para o Counting Sort
+#define MAX_MAESTRIA 1000000  // Definindo a maestria máxima para o Counting Sort
 #define MAX_JOGADORES 5  // Supondo um tamanho fixo para o array de jogadores para simplificar
 
 // Definição do struct Aluno
@@ -1182,7 +1182,7 @@ void ordenaCampeao(struct Jogador jogadores[], char* campeoes[MAX_JOGADORES])
 
 void imprimirJogador(struct Jogador jogadores[], int n) {
   for(int i = 0; i < n; i++)
-    printf("Nome: %s, maestria: %d, campeao[16]: %s\n", jogadores[i].nomeJogador, jogadores[i].maestria, jogadores[i].campeao);
+    printf("Nome: %s, maestria: %d, campeao: %s\n", jogadores[i].nomeJogador, jogadores[i].maestria, jogadores[i].campeao);
 }
 
 void getCampeoes(struct Jogador jogadores[], char* campeoes[MAX_JOGADORES])

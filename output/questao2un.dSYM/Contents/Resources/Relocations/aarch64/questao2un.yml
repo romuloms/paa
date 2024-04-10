@@ -2,8 +2,12 @@
 triple:          'arm64-apple-darwin'
 binary-path:     "/Users/romul/Docs/ufs/Quarto Período/paa/atividades-paa/output/questao2un"
 relocations:
-  - { offsetInCU: 0x26, offset: 0x26, size: 0x8, addend: 0x0, symName: _ordenarPormaestria, symObjAddr: 0x0, symBinAddr: 0x1000039B8, symSize: 0x28C }
-  - { offsetInCU: 0x41, offset: 0x41, size: 0x8, addend: 0x0, symName: _ordenarPormaestria, symObjAddr: 0x0, symBinAddr: 0x1000039B8, symSize: 0x28C }
-  - { offsetInCU: 0xAD, offset: 0xAD, size: 0x8, addend: 0x0, symName: _imprimirJogador, symObjAddr: 0x28C, symBinAddr: 0x100003C44, symSize: 0xB0 }
-  - { offsetInCU: 0xFB, offset: 0xFB, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x33C, symBinAddr: 0x100003CF4, symSize: 0xCC }
+  - { offsetInCU: 0x26, offset: 0x26, size: 0x8, addend: 0x0, symName: _ordenarPorMaestria, symObjAddr: 0x0, symBinAddr: 0x1000033EC, symSize: 0x2C8 }
+  - { offsetInCU: 0x41, offset: 0x41, size: 0x8, addend: 0x0, symName: _ordenarPorMaestria, symObjAddr: 0x0, symBinAddr: 0x1000033EC, symSize: 0x2C8 }
+  - { offsetInCU: 0xBB, offset: 0xBB, size: 0x8, addend: 0x0, symName: _ordenaCampeao, symObjAddr: 0x2C8, symBinAddr: 0x1000036B4, symSize: 0x284 }
+  - { offsetInCU: 0x189, offset: 0x189, size: 0x8, addend: 0x0, symName: _imprimirJogador, symObjAddr: 0x54C, symBinAddr: 0x100003938, symSize: 0xB0 }
+  - { offsetInCU: 0x1D7, offset: 0x1D7, size: 0x8, addend: 0x0, symName: _getCampeoes, symObjAddr: 0x5FC, symBinAddr: 0x1000039E8, symSize: 0xC8 }
+  - { offsetInCU: 0x225, offset: 0x225, size: 0x8, addend: 0x0, symName: _liberaStr, symObjAddr: 0x6C4, symBinAddr: 0x100003AB0, symSize: 0x7C }
+  - { offsetInCU: 0x265, offset: 0x265, size: 0x8, addend: 0x0, symName: _resposta, symObjAddr: 0x740, symBinAddr: 0x100003B2C, symSize: 0x214 }
+  - { offsetInCU: 0x2C1, offset: 0x2C1, size: 0x8, addend: 0x0, symName: _main, symObjAddr: 0x954, symBinAddr: 0x100003D40, symSize: 0xDC }
 ...
